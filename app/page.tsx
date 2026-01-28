@@ -3873,18 +3873,505 @@
 //   );
 // }
 
+// 'use client';
+
+// // 1. ADDED: HeartPulse, ScanFace, Siren for the new project icons
+// import { motion, useScroll, useTransform, AnimatePresence, Variants } from 'framer-motion';
+// import { useRef, useState, useEffect } from 'react';
+// import { ArrowDownRight, ArrowLeft, Database, Code, Terminal, Lock, AlertTriangle, Cpu, ChevronLeft, ChevronRight, MousePointer2, HeartPulse, ScanFace, Siren } from 'lucide-react';
+
+// // Components
+// import DataSculpture from '@/components/DataSculpture'; 
+// import CustomCursor from '@/components/CustomCursor';
+// import HeroTypewriter from '@/components/HeroTypewriter'; 
+// import TechTicker from '@/components/TechTicker'; 
+
+// // --- HELPER: TEXT SCRAMBLER ---
+// const ScrambleText = ({ text, active, className }: { text: string, active: boolean, className?: string }) => {
+//   const [display, setDisplay] = useState(text);
+//   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+
+//   useEffect(() => {
+//     if (!active) {
+//         setDisplay(text);
+//         return;
+//     }
+//     let interval: NodeJS.Timeout;
+//     let iteration = 0;
+//     interval = setInterval(() => {
+//       setDisplay(
+//         text.split("").map((letter, index) => {
+//             if (index < iteration) return text[index];
+//             return chars[Math.floor(Math.random() * chars.length)];
+//           }).join("")
+//       );
+//       if (iteration >= text.length) clearInterval(interval);
+//       iteration += 1 / 3; 
+//     }, 30);
+//     return () => clearInterval(interval);
+//   }, [active, text]);
+//   return <span className={className}>{display}</span>;
+// };
+
+// // --- COMPONENT: THE JARVIS HUD BACKGROUND ---
+// const JarvisBackdrop = () => {
+//     return (
+//         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 flex items-center justify-center bg-black">
+            
+//             {/* 1. MOVING FLOOR GRID */}
+//             <div className="absolute inset-0 opacity-40" 
+//                  style={{ 
+//                      backgroundImage: 'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)', 
+//                      backgroundSize: '60px 60px',
+//                      transform: 'perspective(600px) rotateX(60deg) translateY(0%) translateZ(-200px)',
+//                      maskImage: 'linear-gradient(to bottom, transparent 0%, black 40%, black 100%)' 
+//                  }}>
+//                  <motion.div 
+//                     animate={{ top: ['0%', '100%'] }}
+//                     transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+//                     className="absolute w-full h-[2px] bg-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.8)]"
+//                  />
+//             </div>
+
+//             {/* 2. THE REACTOR RINGS */}
+//             <div className="relative z-0 opacity-60 scale-125 md:scale-150">
+//                 <motion.div 
+//                     animate={{ rotate: 360 }}
+//                     transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+//                     className="absolute inset-0 w-[600px] h-[600px] border-[1px] border-dashed border-white/30 rounded-full -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2"
+//                 />
+//                 <motion.div 
+//                     animate={{ rotate: -360 }}
+//                     transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+//                     className="absolute inset-0 w-[450px] h-[450px] border-[2px] border-white/40 rounded-full -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 shadow-[0_0_30px_rgba(255,255,255,0.1)]"
+//                 >
+//                     <div className="absolute top-0 left-1/2 w-2 h-2 bg-white rounded-full -translate-x-1/2 -translate-y-1 shadow-[0_0_10px_white]"></div>
+//                     <div className="absolute bottom-0 left-1/2 w-2 h-2 bg-white rounded-full -translate-x-1/2 translate-y-1 shadow-[0_0_10px_white]"></div>
+//                 </motion.div>
+//                 <motion.div 
+//                     animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.8, 0.5] }}
+//                     transition={{ duration: 2, repeat: Infinity }}
+//                     className="absolute w-[100px] h-[100px] bg-white/5 rounded-full backdrop-blur-md border border-white/30 -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 flex items-center justify-center shadow-[0_0_50px_rgba(255,255,255,0.2)]"
+//                 >
+//                     <Cpu className="w-8 h-8 text-white/70" />
+//                 </motion.div>
+//             </div>
+
+//             {/* 3. VIGNETTE */}
+//             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_120%)] z-10 pointer-events-none"></div>
+//         </div>
+//     );
+// };
+
+
+// export default function Home() {
+//   const containerRef = useRef(null);
+//   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+//   const [status, setStatus] = useState('idle'); 
+//   const [isExiting, setIsExiting] = useState(false); 
+  
+//   const { scrollYProgress } = useScroll({
+//     target: containerRef,
+//     offset: ["start start", "end end"]
+//   });
+
+//   const heroTextY = useTransform(scrollYProgress, [0, 0.15], ["0%", "-100%"]);
+//   const heroOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
+
+//   // --- PREVENT SCROLLING WHEN OVERLAY IS OPEN ---
+//   useEffect(() => {
+//     if (status === 'breached') {
+//         document.body.style.overflow = 'hidden';
+//     } else {
+//         document.body.style.overflow = 'unset';
+//     }
+//     return () => { document.body.style.overflow = 'unset'; }
+//   }, [status]);
+
+//   const handleTriggerEnter = () => {
+//       if (status === 'idle') {
+//           setStatus('scanning');
+//           setTimeout(() => setStatus('critical'), 1500);
+//           setTimeout(() => setStatus('breached'), 2200);
+//       }
+//   };
+
+//   const scrollCards = (direction: 'left' | 'right') => {
+//     if (scrollContainerRef.current) {
+//         const scrollAmount = window.innerWidth < 768 ? window.innerWidth * 0.85 : window.innerWidth * 0.45;
+//         scrollContainerRef.current.scrollBy({
+//             left: direction === 'left' ? -scrollAmount : scrollAmount,
+//             behavior: 'smooth'
+//         });
+//     }
+//   };
+
+//   // --- ANIMATION VARIANTS ---
+//   const overlayVariants: Variants = {
+//     hidden: { 
+//         opacity: 0,
+//         scale: 1, 
+//     },
+//     visible: { 
+//         opacity: 1,
+//         scale: 1,
+//         filter: ["brightness(1)"],
+//         transition: { duration: 0.5 }
+//     },
+//     exit: { 
+//         scaleY: [1, 0.005, 0.005],
+//         scaleX: [1, 1, 0],
+//         opacity: [1, 1, 0],
+//         filter: ["brightness(1)", "brightness(1)", "brightness(2)"],
+//         transition: { 
+//             duration: 0.4, 
+//             times: [0, 0.6, 1],
+//             ease: "easeInOut"
+//         }
+//     }
+//   };
+
+//   const handleReturn = async () => {
+//     setIsExiting(true); 
+//     await new Promise(r => setTimeout(r, 400));
+//     setStatus('rebooting'); 
+//     setTimeout(() => {
+//         window.scrollTo({ top: 0, behavior: "auto" }); 
+//         setStatus('idle');
+//         setIsExiting(false);
+//     }, 100); 
+//   };
+
+//   return (
+//     <main 
+//       ref={containerRef} 
+//       className="relative min-h-[150vh] bg-white selection:bg-black selection:text-white"
+//     >
+      
+//       <CustomCursor isInverse={status === 'breached'} />
+
+//       {/* LAYER 0: Background */}
+//       <div className="fixed inset-0 z-0 pointer-events-none">
+//           <DataSculpture />
+//       </div>
+
+//       {/* --- REBOOT FLASH OVERLAY --- */}
+//       <AnimatePresence>
+//           {status === 'rebooting' && (
+//               <motion.div 
+//                   initial={{ opacity: 0 }}
+//                   animate={{ opacity: 1 }}
+//                   exit={{ opacity: 0 }} 
+//                   transition={{ duration: 0.1 }} 
+//                   className="fixed inset-0 z-[9999] bg-white pointer-events-none"
+//               />
+//           )}
+//       </AnimatePresence>
+
+//       {/* SECTION 1: HERO */}
+//       <section className="relative z-10 h-screen flex flex-col justify-center px-6 md:px-12 pointer-events-none">
+//         <motion.div style={{ y: heroTextY, opacity: heroOpacity }} className="max-w-[90vw]">
+//           <div className="text-xs font-mono text-zinc-400 mb-6 tracking-widest uppercase">Data Analyst & Architect</div>
+//           <h1 className="text-[12vw] leading-[0.8] font-bold tracking-tighter text-black">
+//             RAW DATA <br /><span className="text-zinc-300">REFINED</span> <br />INSIGHT.
+//           </h1>
+//         </motion.div>
+        
+//         <motion.div style={{ opacity: heroOpacity }} className="absolute bottom-12 right-12 flex gap-4 items-center text-xs font-mono text-zinc-400">
+//             <span className="animate-pulse">INITIALIZING_SYSTEM</span>
+//             <ArrowDownRight className="w-4 h-4" />
+//         </motion.div>
+//       </section>
+
+//       {/* SECTION 2: THE TERMINAL SPLIT */}
+//       <div className="relative z-20 w-full">
+//         <div className="grid grid-cols-1 lg:grid-cols-2">
+            
+//             {/* LEFT SIDE: Fixed Window */}
+//             <div className="hidden lg:flex h-screen sticky top-0 flex-col justify-between px-12 pb-12 pt-32 pointer-events-none">
+//                 <div className="text-xs font-mono text-black/30 uppercase tracking-widest flex items-center gap-2">
+//                     <span className={`w-2 h-2 rounded-full ${status === 'scanning' ? 'bg-red-500 animate-ping' : 'bg-green-500 animate-pulse'}`}></span>
+//                     System_Status: {status === 'idle' ? 'Active' : 'WARNING'}
+//                 </div>
+//             </div>
+
+//             {/* RIGHT SIDE: The Terminal */}
+//             <div className="bg-black text-white min-h-screen p-8 md:p-20 flex flex-col gap-12 shadow-[-50px_0_100px_rgba(0,0,0,0.1)] mt-[10vh]">
+//                 <div className="pt-24">
+//                     <div className="text-xs font-mono text-zinc-500 mb-8 uppercase tracking-widest">[ // Introduction ]</div>
+//                     <HeroTypewriter />
+//                 </div>
+//                 <div>
+//                      <div className="text-xs font-mono text-zinc-500 mb-8 uppercase tracking-widest">[ // Stack ]</div>
+//                     <TechTicker />
+//                 </div>
+
+//                 {/* THE TRIGGER ZONE */}
+//                 <div className="pb-32 pt-8 border-t border-zinc-800">
+//                     <div className="h-[20vh] w-full flex flex-col items-center justify-center gap-4 opacity-70">
+//                         {status === 'scanning' || status === 'critical' ? (
+//                             <Lock className="w-6 h-6 text-red-500 animate-pulse" />
+//                         ) : (
+//                             <Lock className="w-6 h-6 text-zinc-600" />
+//                         )}
+//                         <p className="font-mono text-sm text-zinc-400 uppercase tracking-widest">Restricted Area Below</p>
+//                     </div>
+
+//                     <motion.div 
+//                         initial={{ opacity: 0 }}
+//                         whileInView={{ opacity: 1 }}
+//                         viewport={{ amount: 0.8 }} 
+//                         onViewportEnter={handleTriggerEnter}
+//                         animate={status === 'critical' ? { x: [-5, 5, -5, 5, 0], transition: { duration: 0.2 } } : {}}
+//                         className={`relative h-48 w-full border rounded-lg overflow-hidden mt-4 transition-colors duration-300 ${status === 'critical' ? 'border-red-500 bg-red-950/30' : 'border-red-900/30 bg-red-950/10'}`}
+//                     >
+//                         {(status === 'scanning' || status === 'critical') && (
+//                             <div className="absolute inset-0 flex flex-col items-center justify-center text-red-500 font-mono z-10">
+//                                 <AlertTriangle className={`w-8 h-8 mb-4 ${status === 'critical' ? 'animate-bounce' : 'animate-pulse'}`} />
+//                                 <div className="text-sm tracking-widest font-bold"><ScrambleText text="DETECTING BREACH..." active={true} /></div>
+//                                 <div className="text-xs mt-2 text-red-400/70">{status === 'critical' ? 'CRITICAL FAILURE' : 'BYPASSING FIREWALL'}</div>
+//                             </div>
+//                         )}
+//                         {(status === 'scanning' || status === 'critical') && (
+//                             <motion.div 
+//                                 initial={{ width: "0%" }}
+//                                 animate={{ width: "100%" }}
+//                                 transition={{ duration: 2.2, ease: "linear" }}
+//                                 className="absolute bottom-0 left-0 h-1 bg-red-500 shadow-[0_0_20px_rgba(220,38,38,0.8)]"
+//                             />
+//                         )}
+//                         <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+//                     </motion.div>
+//                 </div>
+//             </div>
+//         </div>
+//       </div>
+
+//       {/* ======================================================== */}
+//       {/* THE "JARVIS" OVERLAY                                     */}
+//       {/* ======================================================== */}
+//       {status === 'breached' && (
+//             <motion.div 
+//                 key="jarvis-interface"
+//                 variants={overlayVariants}
+//                 initial="hidden"
+//                 animate={isExiting ? "exit" : "visible"}
+//                 className="fixed inset-0 z-[100] bg-black text-white overflow-hidden origin-center" 
+//             >
+//                 {/* --- BACKGROUND --- */}
+//                 <JarvisBackdrop />
+
+//                 {/* NAVIGATION CONTROLS */}
+//                 <div className="fixed bottom-8 right-8 z-[1000] flex flex-col items-end gap-2">
+//                     <div className="flex gap-2">
+//                         <button 
+//                             onClick={() => scrollCards('left')}
+//                             className="p-4 rounded-full border border-white/10 bg-zinc-900/50 backdrop-blur-sm text-white/50 hover:text-white hover:bg-zinc-800 hover:scale-105 transition-all active:scale-95"
+//                         >
+//                             <ChevronLeft className="w-6 h-6" />
+//                         </button>
+//                         <button 
+//                             onClick={() => scrollCards('right')}
+//                             className="p-4 rounded-full border border-white/10 bg-zinc-900/50 backdrop-blur-sm text-white/50 hover:text-white hover:bg-zinc-800 hover:scale-105 transition-all active:scale-95"
+//                         >
+//                             <ChevronRight className="w-6 h-6" />
+//                         </button>
+//                     </div>
+//                 </div>
+
+//                 {/* SCROLL NAV HINT */}
+//                 <motion.div 
+//                     initial={{ opacity: 0, y: 20 }}
+//                     animate={{ opacity: 1, y: 0 }}
+//                     transition={{ delay: 1, duration: 0.5 }}
+//                     className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[900] pointer-events-none flex flex-col items-center gap-2"
+//                 >
+//                     <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-500/30 bg-cyan-950/30 backdrop-blur-md">
+//                         <MousePointer2 className="w-4 h-4 text-cyan-400 animate-bounce" />
+//                         <span className="text-xs font-mono font-bold text-cyan-400 tracking-widest animate-pulse">
+//                             SCROLL TO NAVIGATE
+//                         </span>
+//                     </div>
+//                     <div className="w-[1px] h-12 bg-gradient-to-b from-cyan-500/50 to-transparent"></div>
+//                 </motion.div>
+
+//                 {/* EXIT BUTTON */}
+//                 <button 
+//                     onClick={handleReturn}
+//                     className="fixed top-8 left-8 z-[999] text-white/40 hover:text-white flex items-center gap-2 font-mono text-xs uppercase tracking-widest cursor-pointer group bg-black/50 px-4 py-2 border border-white/10 rounded-full"
+//                 >
+//                     <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> 
+//                     Exit Archive
+//                 </button>
+
+//                 {/* SCROLLING CONTENT LAYER */}
+//                 <motion.div 
+//                     ref={scrollContainerRef}
+//                     animate={{ opacity: isExiting ? 0 : 1 }}
+//                     transition={{ duration: 0.2 }}
+//                     className="relative z-10 w-full h-full flex items-center overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pl-[10vw]"
+//                 >
+                    
+//                     {/* Intro Title */}
+//                     <div className="min-w-[40vw] pr-20 snap-center shrink-0">
+//                         <h2 className="text-[10vw] leading-none font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-600 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+//                             DEEP <br/> STORAGE
+//                         </h2>
+//                         <div className="mt-8 font-mono text-cyan-400 text-xs tracking-widest border-l-2 border-cyan-400 pl-4 flex flex-col gap-1 shadow-[0_0_10px_rgba(34,211,238,0.2)]">
+//                             <span className="font-bold"><ScrambleText text="WARNING: ENCRYPTION BROKEN" active={true} /></span>
+//                             <span className="text-cyan-400/60">ACCESS LEVEL: UNRESTRICTED</span>
+//                         </div>
+//                     </div>
+
+//                     {/* CARD 1: SMI / HEART DISEASE */}
+//                     <div className="min-w-[85vw] md:min-w-[45vw] h-[60vh] bg-zinc-950/80 backdrop-blur-md border border-white/20 p-12 flex flex-col justify-between hover:bg-zinc-900/90 hover:border-red-500/50 transition-all duration-500 mr-12 snap-center rounded-sm group relative overflow-hidden">
+//                          <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/10 rounded-full blur-3xl group-hover:bg-red-500/20 transition-all"></div>
+//                         <div className="flex justify-between items-start relative z-10">
+//                              <div className="p-3 bg-white/5 border border-white/10 rounded-full group-hover:scale-110 transition-transform"><HeartPulse className="w-6 h-6 text-red-400" /></div>
+//                              <div className="font-mono text-xs text-zinc-500">[ 001 ]</div>
+//                         </div>
+//                         <div className="relative z-10">
+//                             <h3 className="text-4xl md:text-5xl font-bold mb-6 mt-12 text-white group-hover:text-red-100 transition-colors">SILENT MI<br/>DETECTION</h3>
+//                             <p className="text-zinc-400 font-mono text-sm leading-relaxed max-w-md border-l border-zinc-700 pl-4">
+//                                 Multimodal fusion (ECG + Clinical). <span className="text-red-400">AUC-PR 0.72</span>. Fairness audit & SHAP explainability.
+//                             </p>
+//                         </div>
+//                     </div>
+
+//                     {/* CARD 2: DEEPFAKE */}
+//                     <div className="min-w-[85vw] md:min-w-[45vw] h-[60vh] bg-zinc-950/80 backdrop-blur-md border border-white/20 p-12 flex flex-col justify-between hover:bg-zinc-900/90 hover:border-cyan-400/50 transition-all duration-500 mr-12 snap-center rounded-sm group relative overflow-hidden">
+//                         <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl group-hover:bg-cyan-500/20 transition-all"></div>
+//                         <div className="flex justify-between items-start relative z-10">
+//                              <div className="p-3 bg-white/5 border border-white/10 rounded-full group-hover:scale-110 transition-transform"><ScanFace className="w-6 h-6 text-cyan-300" /></div>
+//                              <div className="font-mono text-xs text-zinc-500">[ 002 ]</div>
+//                         </div>
+//                         <div className="relative z-10">
+//                             <h3 className="text-4xl md:text-5xl font-bold mb-6 mt-12 text-white group-hover:text-cyan-100 transition-colors">DEEPFAKE<br/>FORENSICS</h3>
+//                             <p className="text-zinc-400 font-mono text-sm leading-relaxed max-w-md border-l border-zinc-700 pl-4">
+//                                 CNN + LSTM temporal modeling. <span className="text-cyan-400">90% F1-Score</span>. ResNet50/EfficientNet backbone. 
+//                             </p>
+//                         </div>
+//                     </div>
+
+//                      {/* CARD 3: CRIME PREDICTION */}
+//                      <div className="min-w-[85vw] md:min-w-[45vw] h-[60vh] bg-zinc-950/80 backdrop-blur-md border border-white/20 p-12 flex flex-col justify-between hover:bg-zinc-900/90 hover:border-orange-400/50 transition-all duration-500 mr-12 snap-center rounded-sm group relative overflow-hidden">
+//                         <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl group-hover:bg-orange-500/20 transition-all"></div>
+//                         <div className="flex justify-between items-start relative z-10">
+//                              <div className="p-3 bg-white/5 border border-white/10 rounded-full group-hover:scale-110 transition-transform"><Siren className="w-6 h-6 text-orange-300" /></div>
+//                              <div className="font-mono text-xs text-zinc-500">[ 003 ]</div>
+//                         </div>
+//                         <div className="relative z-10">
+//                             <h3 className="text-4xl md:text-5xl font-bold mb-6 mt-12 text-white group-hover:text-orange-100 transition-colors">PREDICTIVE<br/>POLICING</h3>
+//                             <p className="text-zinc-400 font-mono text-sm leading-relaxed max-w-md border-l border-zinc-700 pl-4">
+//                                 Hybrid Sentiment Analysis + Historical Data. <span className="text-orange-400">87% Accuracy</span>. Processed 20GB+ social streams.
+//                             </p>
+//                         </div>
+//                     </div>
+
+//                     <div className="min-w-[10vw] snap-center"></div>
+//                 </motion.div>
+//             </motion.div>
+//       )}
+//     </main>
+//   );
+// }
+
+
+
 'use client';
 
-// 1. ADDED: HeartPulse, ScanFace, Siren for the new project icons
 import { motion, useScroll, useTransform, AnimatePresence, Variants } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
-import { ArrowDownRight, ArrowLeft, Database, Code, Terminal, Lock, AlertTriangle, Cpu, ChevronLeft, ChevronRight, MousePointer2, HeartPulse, ScanFace, Siren } from 'lucide-react';
+import { ArrowDownRight, ArrowLeft, Database, Code, Terminal, Lock, AlertTriangle, Cpu, ChevronLeft, ChevronRight, MousePointer2, HeartPulse, ScanFace, Siren, X, Calendar, Building2, Layers, CheckCircle2, FileText, Share2, Network } from 'lucide-react';
 
 // Components
 import DataSculpture from '@/components/DataSculpture'; 
 import CustomCursor from '@/components/CustomCursor';
 import HeroTypewriter from '@/components/HeroTypewriter'; 
 import TechTicker from '@/components/TechTicker'; 
+
+// --- TYPES & DATA ---
+type Project = {
+    id: number;
+    title: string;
+    date: string;
+    association: string;
+    icon: any;
+    color: string;
+    problem: string;
+    methodology: string[];
+    results: string[];
+    stack: string[];
+};
+
+const PROJECT_DATA: Project[] = [
+    {
+        id: 1,
+        title: "Risk Assessment Models for Silent Myocardial Infarction",
+        date: "Aug 2025 - Nov 2025",
+        association: "University at Buffalo",
+        icon: HeartPulse,
+        color: "text-red-400",
+        problem: "Developed a clinical decision support system to detect Silent Myocardial Infarction (SMI) in patients with Type 2 Diabetes. Diabetic autonomic neuropathy often masks chest pain ('silent' presentation), leading to delayed diagnosis and high mortality. Standard risk scores (e.g., Framingham) often fail to detect these subtle ischemic events.",
+        methodology: [
+            "Designed a 'Late Fusion' multimodal architecture integrating two distinct data streams.",
+            "Longitudinal Clinical Data: Processed electronic health records (MIMIC-IV) using MICE imputation for missing values.",
+            "Raw Physiological Waveforms: Developed a 1D-Convolutional Neural Network (1D-CNN) pre-trained on PTB-XL to extract deep morphological embeddings (e.g., repolarization dispersion) from raw 10-second ECG signals.",
+            "Fusion Layer: Concatenated deep ECG embeddings with clinical features into an XGBoost classifier to capture non-linear interactions between physiology and patient history."
+        ],
+        results: [
+            "Performance: The multimodal fusion model achieved an AUC-PR of 0.72, significantly outperforming unimodal baselines (Clinical-only RF: 0.61; ECG-only CNN: 0.66).",
+            "Clinical Utility: Performed Decision Curve Analysis (DCA), demonstrating a higher net clinical benefit than 'Treat-All' or 'Treat-None' strategies in the critical 5%–40% risk threshold range.",
+            "Responsible AI: Implemented Isotonic Regression to calibrate probabilities (reducing Brier Score to 0.138) and conducted a Fairness Audit, confirming equal opportunity (TPR parity <3% gap) across age and sex subgroups.",
+            "Interpretability: Utilized SHAP analysis to reveal that deep ECG embeddings were top-ranking predictors, identifying subtle T-wave morphological variances often missed in manual clinical review."
+        ],
+        stack: ["Machine Learning", "Deep Learning (1D-CNN)", "Multimodal Data Fusion", "XGBoost", "Python (PyTorch)", "Medical Signal Processing", "SHAP", "Algorithmic Fairness", "Clinical Data Engineering"]
+    },
+    {
+        id: 2,
+        title: "Deepfake Detection using CNNs & Temporal Modeling",
+        date: "May 2025 - Jun 2025",
+        association: "University at Buffalo",
+        icon: ScanFace,
+        color: "text-cyan-400",
+        problem: "The rise of synthetic media threatens digital authenticity. This project aimed to build a robust detection pipeline capable of distinguishing between real and manipulated video frames across diverse datasets, addressing the challenge of high-fidelity facial reenactment.",
+        methodology: [
+            "Designed a data pipeline to process over 40,000+ video frames from the FaceForensics++ dataset.",
+            "Used OpenCV + MTCNN for face detection and cropping; implemented frame-level data normalization and augmentation for model readiness.",
+            "Built multiple CNN-based architectures (e.g., ResNet50, EfficientNet-B0) and fused them using temporal LSTM layers to extract features across video time steps.",
+            "Performed quantitative analysis of model metrics (accuracy, precision, recall, F1-score) and visualized performance using ROC curves, confusion matrices, and Grad-CAM."
+        ],
+        results: [
+            "Feature fusion models outperformed individual CNNs by capturing complementary visual patterns, increasing F1-score from 71% to 87%.",
+            "Fine-tuning and face-focused training provided the best result, achieving an F1-score of 90.18% and accuracy of 85%.",
+            "Demonstrated that domain-specific training and data preprocessing significantly impact model performance — a key insight for data-centric roles."
+        ],
+        stack: ["Machine Learning", "Deep Learning", "Multimodal Data Fusion", "XGBoost", "Python", "Generative Shape Design", "Algorithm Design", "Artificial Intelligence"]
+    },
+    {
+        id: 3,
+        title: "Crime Prediction Using Sentiment Analysis",
+        date: "Aug 2024 - Dec 2024",
+        association: "University at Buffalo",
+        icon: Siren,
+        color: "text-orange-400",
+        problem: "Traditional crime prediction relies heavily on historical hotspots, often reinforcing bias and failing to account for social dynamics. This project sought to bridge the gap between static data systems and live actionable intelligence by integrating real-time social sentiment.",
+        methodology: [
+            "Designed and implemented a hybrid predictive model that integrates historical crime data with real-time social media sentiment.",
+            "Preprocessed and managed over 20GB of data, leveraging powerful tools like Playwright, PRAW, NLTK, and TextBlob to extract meaningful insights from unstructured social media datasets.",
+            "Applied Principal Component Analysis (PCA) for dimensionality reduction and Random Forest algorithms for severity prediction.",
+            "Enhanced data reliability by addressing challenges in data cleaning, reducing inconsistencies, and improving preprocessing workflows."
+        ],
+        results: [
+            "Achieved 87% accuracy in sentiment analysis and crime severity predictions.",
+            "Enabled dynamic crime severity assessments by integrating real-time sentiment data with traditional crime statistics.",
+            "Demonstrated the transformative potential of machine learning in public safety by delivering a scalable model for urban safety planning and resource allocation.",
+            "Showcased leadership in developing solutions that combine AI, data science, and social insights to solve complex societal challenges."
+        ],
+        stack: ["PCA", "Artificial Intelligence", "Machine Learning", "Data Mining", "Python", "NLTK", "TextBlob", "Random Forest", "Playwright"]
+    }
+];
 
 // --- HELPER: TEXT SCRAMBLER ---
 const ScrambleText = ({ text, active, className }: { text: string, active: boolean, className?: string }) => {
@@ -3913,12 +4400,10 @@ const ScrambleText = ({ text, active, className }: { text: string, active: boole
   return <span className={className}>{display}</span>;
 };
 
-// --- COMPONENT: THE JARVIS HUD BACKGROUND ---
+// --- COMPONENT: JARVIS BACKGROUND ---
 const JarvisBackdrop = () => {
     return (
         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 flex items-center justify-center bg-black">
-            
-            {/* 1. MOVING FLOOR GRID */}
             <div className="absolute inset-0 opacity-40" 
                  style={{ 
                      backgroundImage: 'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)', 
@@ -3932,34 +4417,158 @@ const JarvisBackdrop = () => {
                     className="absolute w-full h-[2px] bg-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.8)]"
                  />
             </div>
-
-            {/* 2. THE REACTOR RINGS */}
             <div className="relative z-0 opacity-60 scale-125 md:scale-150">
                 <motion.div 
                     animate={{ rotate: 360 }}
                     transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
                     className="absolute inset-0 w-[600px] h-[600px] border-[1px] border-dashed border-white/30 rounded-full -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2"
                 />
-                <motion.div 
-                    animate={{ rotate: -360 }}
-                    transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-0 w-[450px] h-[450px] border-[2px] border-white/40 rounded-full -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 shadow-[0_0_30px_rgba(255,255,255,0.1)]"
-                >
-                    <div className="absolute top-0 left-1/2 w-2 h-2 bg-white rounded-full -translate-x-1/2 -translate-y-1 shadow-[0_0_10px_white]"></div>
-                    <div className="absolute bottom-0 left-1/2 w-2 h-2 bg-white rounded-full -translate-x-1/2 translate-y-1 shadow-[0_0_10px_white]"></div>
-                </motion.div>
-                <motion.div 
-                    animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.8, 0.5] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="absolute w-[100px] h-[100px] bg-white/5 rounded-full backdrop-blur-md border border-white/30 -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 flex items-center justify-center shadow-[0_0_50px_rgba(255,255,255,0.2)]"
-                >
-                    <Cpu className="w-8 h-8 text-white/70" />
-                </motion.div>
+                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[450px] border-[2px] border-white/40 rounded-full shadow-[0_0_30px_rgba(255,255,255,0.1)]"></div>
             </div>
-
-            {/* 3. VIGNETTE */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_120%)] z-10 pointer-events-none"></div>
         </div>
+    );
+};
+
+// --- COMPONENT: PROJECT DETAIL VIEW ---
+const ProjectDetail = ({ project, onClose }: { project: Project, onClose: () => void }) => {
+    const bgColor = project.color.replace('text-', 'bg-');
+    const borderColor = project.color.replace('text-', 'border-');
+
+    return (
+        <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="fixed inset-0 z-[2000] bg-zinc-950 flex flex-col overflow-y-auto no-scrollbar"
+        >
+            {/* BACKGROUND GRID */}
+            <div className="fixed inset-0 pointer-events-none opacity-20 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+            
+            {/* TOP BAR */}
+            <div className="sticky top-0 z-[2002] p-6 flex justify-between items-center bg-zinc-950/90 backdrop-blur-md border-b border-white/10">
+                <div className="flex items-center gap-4">
+                     <div className={`p-2 rounded-full bg-white/5 border border-white/10 ${project.color}`}>
+                        <project.icon className="w-5 h-5" />
+                     </div>
+                     <div className="flex flex-col">
+                        <span className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">Secure_Record</span>
+                        <span className="font-mono text-sm font-bold text-white tracking-widest">ID_00{project.id}</span>
+                     </div>
+                </div>
+                <button 
+                    onClick={onClose} 
+                    className="group flex items-center gap-2 px-4 py-2 text-xs font-mono uppercase tracking-widest border border-white/10 rounded-full hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/50 transition-all"
+                >
+                    <span className="hidden md:inline">Close File</span>
+                    <X className="w-4 h-4 group-hover:rotate-90 transition-transform" />
+                </button>
+            </div>
+
+            {/* CONTENT */}
+            <div className="max-w-6xl mx-auto w-full p-6 md:p-12 pb-24 flex flex-col gap-16 relative z-10">
+                
+                {/* HERO HEADER */}
+                <div className="border-l-2 border-white/20 pl-8 relative">
+                    <motion.div 
+                        initial={{ height: 0 }} 
+                        animate={{ height: "100%" }} 
+                        className={`absolute left-[-2px] top-0 w-[2px] ${bgColor}`}
+                    />
+                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight leading-none text-white">
+                        {project.title}
+                    </h1>
+                    <div className="flex flex-wrap gap-x-8 gap-y-4 font-mono text-xs text-zinc-400 uppercase tracking-widest">
+                        <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4 text-zinc-600" /> {project.date}
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Building2 className="w-4 h-4 text-zinc-600" /> {project.association}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                    
+                    {/* LEFT COLUMN: Main Tech Specs */}
+                    <div className="lg:col-span-8 flex flex-col gap-12">
+                        
+                        {/* PROBLEM */}
+                        <section className="group">
+                            <h3 className={`text-sm font-mono uppercase tracking-widest mb-4 flex items-center gap-2 ${project.color}`}>
+                                <AlertTriangle className="w-4 h-4" /> Mission Brief (Problem)
+                            </h3>
+                            <p className="text-zinc-300 leading-relaxed text-lg border border-white/5 bg-white/5 p-6 rounded-sm">
+                                {project.problem}
+                            </p>
+                        </section>
+
+                        {/* METHODOLOGY */}
+                        <section>
+                            <h3 className={`text-sm font-mono uppercase tracking-widest mb-4 flex items-center gap-2 ${project.color}`}>
+                                <Network className="w-4 h-4" /> Technical Architecture
+                            </h3>
+                            <div className="space-y-4">
+                                {project.methodology.map((item, i) => (
+                                    <div key={i} className="flex gap-4">
+                                        <div className={`mt-2 min-w-[6px] h-[6px] rounded-full ${bgColor}`}></div>
+                                        <p className="text-zinc-400 leading-relaxed">{item}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+
+                        {/* RESULTS */}
+                        <section>
+                            <h3 className={`text-sm font-mono uppercase tracking-widest mb-4 flex items-center gap-2 ${project.color}`}>
+                                <CheckCircle2 className="w-4 h-4" /> Execution Log (Results)
+                            </h3>
+                            <div className="grid grid-cols-1 gap-4">
+                                {project.results.map((res, i) => (
+                                    <div key={i} className="flex items-center gap-4 p-4 border border-white/5 bg-zinc-900/50 rounded-sm hover:border-white/20 transition-colors">
+                                        <div className={`w-1 h-8 ${bgColor}`}></div>
+                                        <span className="text-zinc-300 text-sm leading-relaxed">{res}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+
+                    </div>
+
+                    {/* RIGHT COLUMN: Stack & Metadata */}
+                    <div className="lg:col-span-4 flex flex-col gap-8">
+                        <div className="sticky top-32">
+                             <div className="p-6 border border-white/10 rounded-sm bg-zinc-900/80 backdrop-blur-sm">
+                                <h3 className="text-xs font-mono uppercase tracking-widest text-zinc-500 mb-6 flex items-center gap-2">
+                                    <Layers className="w-4 h-4" /> Tech Stack
+                                </h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {project.stack.map((tech) => (
+                                        <span key={tech} className={`px-3 py-1.5 text-xs font-mono border border-white/10 rounded-sm text-zinc-300 bg-black/50 hover:${project.color} hover:border-white/30 transition-colors cursor-default`}>
+                                            {tech}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="mt-8 p-6 border border-dashed border-white/10 rounded-sm opacity-50">
+                                <h3 className="text-xs font-mono uppercase tracking-widest text-zinc-600 mb-2">Security Level</h3>
+                                <p className="text-xs font-mono text-zinc-400">UNRESTRICTED ACCESS</p>
+                                <div className="w-full h-1 bg-zinc-800 mt-4 overflow-hidden">
+                                    <motion.div 
+                                        animate={{ x: ["-100%", "100%"] }} 
+                                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                                        className={`w-1/2 h-full ${bgColor}`}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </motion.div>
     );
 };
 
@@ -3971,6 +4580,9 @@ export default function Home() {
   const [status, setStatus] = useState('idle'); 
   const [isExiting, setIsExiting] = useState(false); 
   
+  // NEW STATE: Selected Project for Detail View
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
@@ -3979,14 +4591,13 @@ export default function Home() {
   const heroTextY = useTransform(scrollYProgress, [0, 0.15], ["0%", "-100%"]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
-  // --- PREVENT SCROLLING WHEN OVERLAY IS OPEN ---
+  // Prevent scrolling
   useEffect(() => {
     if (status === 'breached') {
         document.body.style.overflow = 'hidden';
     } else {
         document.body.style.overflow = 'unset';
     }
-    return () => { document.body.style.overflow = 'unset'; }
   }, [status]);
 
   const handleTriggerEnter = () => {
@@ -4007,28 +4618,13 @@ export default function Home() {
     }
   };
 
-  // --- ANIMATION VARIANTS ---
   const overlayVariants: Variants = {
-    hidden: { 
-        opacity: 0,
-        scale: 1, 
-    },
-    visible: { 
-        opacity: 1,
-        scale: 1,
-        filter: ["brightness(1)"],
-        transition: { duration: 0.5 }
-    },
+    hidden: { opacity: 0, scale: 1 },
+    visible: { opacity: 1, scale: 1, filter: ["brightness(1)"], transition: { duration: 0.5 } },
     exit: { 
-        scaleY: [1, 0.005, 0.005],
-        scaleX: [1, 1, 0],
-        opacity: [1, 1, 0],
+        scaleY: [1, 0.005, 0.005], scaleX: [1, 1, 0], opacity: [1, 1, 0],
         filter: ["brightness(1)", "brightness(1)", "brightness(2)"],
-        transition: { 
-            duration: 0.4, 
-            times: [0, 0.6, 1],
-            ease: "easeInOut"
-        }
+        transition: { duration: 0.4, times: [0, 0.6, 1], ease: "easeInOut" }
     }
   };
 
@@ -4040,6 +4636,7 @@ export default function Home() {
         window.scrollTo({ top: 0, behavior: "auto" }); 
         setStatus('idle');
         setIsExiting(false);
+        setSelectedProject(null); // Ensure project view is closed on full exit
     }, 100); 
   };
 
@@ -4049,22 +4646,32 @@ export default function Home() {
       className="relative min-h-[150vh] bg-white selection:bg-black selection:text-white"
     >
       
-      <CustomCursor isInverse={status === 'breached'} />
+      {/* Cursor Logic: 
+         - White if 'breached' (Overlay) 
+         - White if 'selectedProject' is active (Detail View)
+      */}
+      <CustomCursor isInverse={status === 'breached' || !!selectedProject} />
 
-      {/* LAYER 0: Background */}
       <div className="fixed inset-0 z-0 pointer-events-none">
           <DataSculpture />
       </div>
 
-      {/* --- REBOOT FLASH OVERLAY --- */}
       <AnimatePresence>
           {status === 'rebooting' && (
               <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }} 
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} 
                   transition={{ duration: 0.1 }} 
                   className="fixed inset-0 z-[9999] bg-white pointer-events-none"
+              />
+          )}
+      </AnimatePresence>
+
+      {/* --- PROJECT DETAIL VIEW (AnimatePresence allows exit animations) --- */}
+      <AnimatePresence>
+          {selectedProject && (
+              <ProjectDetail 
+                  project={selectedProject} 
+                  onClose={() => setSelectedProject(null)} 
               />
           )}
       </AnimatePresence>
@@ -4077,7 +4684,6 @@ export default function Home() {
             RAW DATA <br /><span className="text-zinc-300">REFINED</span> <br />INSIGHT.
           </h1>
         </motion.div>
-        
         <motion.div style={{ opacity: heroOpacity }} className="absolute bottom-12 right-12 flex gap-4 items-center text-xs font-mono text-zinc-400">
             <span className="animate-pulse">INITIALIZING_SYSTEM</span>
             <ArrowDownRight className="w-4 h-4" />
@@ -4088,7 +4694,6 @@ export default function Home() {
       <div className="relative z-20 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2">
             
-            {/* LEFT SIDE: Fixed Window */}
             <div className="hidden lg:flex h-screen sticky top-0 flex-col justify-between px-12 pb-12 pt-32 pointer-events-none">
                 <div className="text-xs font-mono text-black/30 uppercase tracking-widest flex items-center gap-2">
                     <span className={`w-2 h-2 rounded-full ${status === 'scanning' ? 'bg-red-500 animate-ping' : 'bg-green-500 animate-pulse'}`}></span>
@@ -4096,7 +4701,6 @@ export default function Home() {
                 </div>
             </div>
 
-            {/* RIGHT SIDE: The Terminal */}
             <div className="bg-black text-white min-h-screen p-8 md:p-20 flex flex-col gap-12 shadow-[-50px_0_100px_rgba(0,0,0,0.1)] mt-[10vh]">
                 <div className="pt-24">
                     <div className="text-xs font-mono text-zinc-500 mb-8 uppercase tracking-widest">[ // Introduction ]</div>
@@ -4107,14 +4711,9 @@ export default function Home() {
                     <TechTicker />
                 </div>
 
-                {/* THE TRIGGER ZONE */}
                 <div className="pb-32 pt-8 border-t border-zinc-800">
                     <div className="h-[20vh] w-full flex flex-col items-center justify-center gap-4 opacity-70">
-                        {status === 'scanning' || status === 'critical' ? (
-                            <Lock className="w-6 h-6 text-red-500 animate-pulse" />
-                        ) : (
-                            <Lock className="w-6 h-6 text-zinc-600" />
-                        )}
+                        <Lock className={`w-6 h-6 ${status === 'scanning' ? 'text-red-500 animate-pulse' : 'text-zinc-600'}`} />
                         <p className="font-mono text-sm text-zinc-400 uppercase tracking-widest">Restricted Area Below</p>
                     </div>
 
@@ -4130,16 +4729,7 @@ export default function Home() {
                             <div className="absolute inset-0 flex flex-col items-center justify-center text-red-500 font-mono z-10">
                                 <AlertTriangle className={`w-8 h-8 mb-4 ${status === 'critical' ? 'animate-bounce' : 'animate-pulse'}`} />
                                 <div className="text-sm tracking-widest font-bold"><ScrambleText text="DETECTING BREACH..." active={true} /></div>
-                                <div className="text-xs mt-2 text-red-400/70">{status === 'critical' ? 'CRITICAL FAILURE' : 'BYPASSING FIREWALL'}</div>
                             </div>
-                        )}
-                        {(status === 'scanning' || status === 'critical') && (
-                            <motion.div 
-                                initial={{ width: "0%" }}
-                                animate={{ width: "100%" }}
-                                transition={{ duration: 2.2, ease: "linear" }}
-                                className="absolute bottom-0 left-0 h-1 bg-red-500 shadow-[0_0_20px_rgba(220,38,38,0.8)]"
-                            />
                         )}
                         <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
                     </motion.div>
@@ -4159,22 +4749,15 @@ export default function Home() {
                 animate={isExiting ? "exit" : "visible"}
                 className="fixed inset-0 z-[100] bg-black text-white overflow-hidden origin-center" 
             >
-                {/* --- BACKGROUND --- */}
                 <JarvisBackdrop />
 
-                {/* NAVIGATION CONTROLS */}
+                {/* CONTROLS */}
                 <div className="fixed bottom-8 right-8 z-[1000] flex flex-col items-end gap-2">
                     <div className="flex gap-2">
-                        <button 
-                            onClick={() => scrollCards('left')}
-                            className="p-4 rounded-full border border-white/10 bg-zinc-900/50 backdrop-blur-sm text-white/50 hover:text-white hover:bg-zinc-800 hover:scale-105 transition-all active:scale-95"
-                        >
+                        <button onClick={() => scrollCards('left')} className="p-4 rounded-full border border-white/10 bg-zinc-900/50 backdrop-blur-sm text-white/50 hover:text-white hover:bg-zinc-800 hover:scale-105 transition-all active:scale-95">
                             <ChevronLeft className="w-6 h-6" />
                         </button>
-                        <button 
-                            onClick={() => scrollCards('right')}
-                            className="p-4 rounded-full border border-white/10 bg-zinc-900/50 backdrop-blur-sm text-white/50 hover:text-white hover:bg-zinc-800 hover:scale-105 transition-all active:scale-95"
-                        >
+                        <button onClick={() => scrollCards('right')} className="p-4 rounded-full border border-white/10 bg-zinc-900/50 backdrop-blur-sm text-white/50 hover:text-white hover:bg-zinc-800 hover:scale-105 transition-all active:scale-95">
                             <ChevronRight className="w-6 h-6" />
                         </button>
                     </div>
@@ -4182,27 +4765,19 @@ export default function Home() {
 
                 {/* SCROLL NAV HINT */}
                 <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1, duration: 0.5 }}
+                    initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1, duration: 0.5 }}
                     className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[900] pointer-events-none flex flex-col items-center gap-2"
                 >
                     <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-500/30 bg-cyan-950/30 backdrop-blur-md">
                         <MousePointer2 className="w-4 h-4 text-cyan-400 animate-bounce" />
-                        <span className="text-xs font-mono font-bold text-cyan-400 tracking-widest animate-pulse">
-                            SCROLL TO NAVIGATE
-                        </span>
+                        <span className="text-xs font-mono font-bold text-cyan-400 tracking-widest animate-pulse">SCROLL TO NAVIGATE</span>
                     </div>
                     <div className="w-[1px] h-12 bg-gradient-to-b from-cyan-500/50 to-transparent"></div>
                 </motion.div>
 
-                {/* EXIT BUTTON */}
-                <button 
-                    onClick={handleReturn}
-                    className="fixed top-8 left-8 z-[999] text-white/40 hover:text-white flex items-center gap-2 font-mono text-xs uppercase tracking-widest cursor-pointer group bg-black/50 px-4 py-2 border border-white/10 rounded-full"
-                >
-                    <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> 
-                    Exit Archive
+                {/* EXIT */}
+                <button onClick={handleReturn} className="fixed top-8 left-8 z-[999] text-white/40 hover:text-white flex items-center gap-2 font-mono text-xs uppercase tracking-widest cursor-pointer group bg-black/50 px-4 py-2 border border-white/10 rounded-full">
+                    <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Exit Archive
                 </button>
 
                 {/* SCROLLING CONTENT LAYER */}
@@ -4212,62 +4787,43 @@ export default function Home() {
                     transition={{ duration: 0.2 }}
                     className="relative z-10 w-full h-full flex items-center overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pl-[10vw]"
                 >
-                    
-                    {/* Intro Title */}
+                    {/* Intro */}
                     <div className="min-w-[40vw] pr-20 snap-center shrink-0">
-                        <h2 className="text-[10vw] leading-none font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-600 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
-                            DEEP <br/> STORAGE
-                        </h2>
-                        <div className="mt-8 font-mono text-cyan-400 text-xs tracking-widest border-l-2 border-cyan-400 pl-4 flex flex-col gap-1 shadow-[0_0_10px_rgba(34,211,238,0.2)]">
+                        <h2 className="text-[10vw] leading-none font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-600">DEEP <br/> STORAGE</h2>
+                        <div className="mt-8 font-mono text-cyan-400 text-xs tracking-widest border-l-2 border-cyan-400 pl-4 flex flex-col gap-1">
                             <span className="font-bold"><ScrambleText text="WARNING: ENCRYPTION BROKEN" active={true} /></span>
                             <span className="text-cyan-400/60">ACCESS LEVEL: UNRESTRICTED</span>
                         </div>
                     </div>
 
-                    {/* CARD 1: SMI / HEART DISEASE */}
-                    <div className="min-w-[85vw] md:min-w-[45vw] h-[60vh] bg-zinc-950/80 backdrop-blur-md border border-white/20 p-12 flex flex-col justify-between hover:bg-zinc-900/90 hover:border-red-500/50 transition-all duration-500 mr-12 snap-center rounded-sm group relative overflow-hidden">
-                         <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/10 rounded-full blur-3xl group-hover:bg-red-500/20 transition-all"></div>
-                        <div className="flex justify-between items-start relative z-10">
-                             <div className="p-3 bg-white/5 border border-white/10 rounded-full group-hover:scale-110 transition-transform"><HeartPulse className="w-6 h-6 text-red-400" /></div>
-                             <div className="font-mono text-xs text-zinc-500">[ 001 ]</div>
+                    {/* DYNAMIC CARD RENDERING FROM 'PROJECT_DATA' */}
+                    {PROJECT_DATA.map((proj) => (
+                         <div 
+                            key={proj.id}
+                            onClick={() => setSelectedProject(proj)}
+                            className="min-w-[85vw] md:min-w-[45vw] h-[60vh] bg-zinc-950/80 backdrop-blur-md border border-white/20 p-12 flex flex-col justify-between hover:bg-zinc-900/90 hover:border-white/50 transition-all duration-500 mr-12 snap-center rounded-sm group relative overflow-hidden cursor-pointer"
+                        >
+                            <div className={`absolute top-0 right-0 w-32 h-32 ${proj.color.replace('text-', 'bg-')}/10 rounded-full blur-3xl group-hover:${proj.color.replace('text-', 'bg-')}/20 transition-all`}></div>
+                            <div className="flex justify-between items-start relative z-10">
+                                <div className="p-3 bg-white/5 border border-white/10 rounded-full group-hover:scale-110 transition-transform">
+                                    <proj.icon className={`w-6 h-6 ${proj.color}`} />
+                                </div>
+                                <div className="font-mono text-xs text-zinc-500">[ 00{proj.id} ]</div>
+                            </div>
+                            <div className="relative z-10">
+                                <h3 className={`text-4xl md:text-5xl font-bold mb-6 mt-12 text-white group-hover:${proj.color.replace('text-', 'text-').replace('400', '100')} transition-colors`}>
+                                    {proj.title}
+                                </h3>
+                                <p className="text-zinc-400 font-mono text-sm leading-relaxed max-w-md border-l border-zinc-700 pl-4 line-clamp-3">
+                                    {proj.problem}
+                                </p>
+                                <div className="mt-6 flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-zinc-500 group-hover:text-white transition-colors">
+                                    <span>Read Full File</span>
+                                    <ArrowDownRight className="w-3 h-3" />
+                                </div>
+                            </div>
                         </div>
-                        <div className="relative z-10">
-                            <h3 className="text-4xl md:text-5xl font-bold mb-6 mt-12 text-white group-hover:text-red-100 transition-colors">SILENT MI<br/>DETECTION</h3>
-                            <p className="text-zinc-400 font-mono text-sm leading-relaxed max-w-md border-l border-zinc-700 pl-4">
-                                Multimodal fusion (ECG + Clinical). <span className="text-red-400">AUC-PR 0.72</span>. Fairness audit & SHAP explainability.
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* CARD 2: DEEPFAKE */}
-                    <div className="min-w-[85vw] md:min-w-[45vw] h-[60vh] bg-zinc-950/80 backdrop-blur-md border border-white/20 p-12 flex flex-col justify-between hover:bg-zinc-900/90 hover:border-cyan-400/50 transition-all duration-500 mr-12 snap-center rounded-sm group relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl group-hover:bg-cyan-500/20 transition-all"></div>
-                        <div className="flex justify-between items-start relative z-10">
-                             <div className="p-3 bg-white/5 border border-white/10 rounded-full group-hover:scale-110 transition-transform"><ScanFace className="w-6 h-6 text-cyan-300" /></div>
-                             <div className="font-mono text-xs text-zinc-500">[ 002 ]</div>
-                        </div>
-                        <div className="relative z-10">
-                            <h3 className="text-4xl md:text-5xl font-bold mb-6 mt-12 text-white group-hover:text-cyan-100 transition-colors">DEEPFAKE<br/>FORENSICS</h3>
-                            <p className="text-zinc-400 font-mono text-sm leading-relaxed max-w-md border-l border-zinc-700 pl-4">
-                                CNN + LSTM temporal modeling. <span className="text-cyan-400">90% F1-Score</span>. ResNet50/EfficientNet backbone. 
-                            </p>
-                        </div>
-                    </div>
-
-                     {/* CARD 3: CRIME PREDICTION */}
-                     <div className="min-w-[85vw] md:min-w-[45vw] h-[60vh] bg-zinc-950/80 backdrop-blur-md border border-white/20 p-12 flex flex-col justify-between hover:bg-zinc-900/90 hover:border-orange-400/50 transition-all duration-500 mr-12 snap-center rounded-sm group relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl group-hover:bg-orange-500/20 transition-all"></div>
-                        <div className="flex justify-between items-start relative z-10">
-                             <div className="p-3 bg-white/5 border border-white/10 rounded-full group-hover:scale-110 transition-transform"><Siren className="w-6 h-6 text-orange-300" /></div>
-                             <div className="font-mono text-xs text-zinc-500">[ 003 ]</div>
-                        </div>
-                        <div className="relative z-10">
-                            <h3 className="text-4xl md:text-5xl font-bold mb-6 mt-12 text-white group-hover:text-orange-100 transition-colors">PREDICTIVE<br/>POLICING</h3>
-                            <p className="text-zinc-400 font-mono text-sm leading-relaxed max-w-md border-l border-zinc-700 pl-4">
-                                Hybrid Sentiment Analysis + Historical Data. <span className="text-orange-400">87% Accuracy</span>. Processed 20GB+ social streams.
-                            </p>
-                        </div>
-                    </div>
+                    ))}
 
                     <div className="min-w-[10vw] snap-center"></div>
                 </motion.div>
