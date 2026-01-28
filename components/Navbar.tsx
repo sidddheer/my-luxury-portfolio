@@ -143,7 +143,6 @@
 'use client';
 
 import Link from 'next/link';
-// 1. Import the newly created Logo component
 import Logo from '@/components/Logo';
 
 export default function Navbar() {
@@ -151,7 +150,6 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 w-full z-50 flex justify-between items-center px-6 py-6 md:px-12 md:py-8 mix-blend-difference text-white">
       
       {/* LEFT: Logo */}
-      {/* 2. Replaced text with Logo component & removed conflicting text classes */}
       <Link href="/">
         <Logo />
       </Link>
@@ -163,6 +161,10 @@ export default function Navbar() {
         </Link>
         <Link href="/projects" className="hover:opacity-60 transition-opacity duration-300">
           Projects
+        </Link>
+        {/* ADDED: Link to the new Process page */}
+        <Link href="/process" className="hover:opacity-60 transition-opacity duration-300">
+          Process
         </Link>
       </div>
 
