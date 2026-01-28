@@ -1,1 +1,39 @@
-<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1155 1000"><path d="m577.3 0 577.4 1000H0z" fill="#fff"/></svg>
+<svg 
+          viewBox="0 0 36 36" 
+          fill="none" 
+          xmlns="http://www.w3.org/2000/svg"
+>
+          {/* Outer Reactor Ring (Segmented) */}
+          <path 
+            d="M18 2.5C9.43959 2.5 2.5 9.43959 2.5 18C2.5 26.5604 9.43959 33.5 18 33.5C26.5604 33.5 33.5 26.5604 33.5 18C33.5 9.43959 26.5604 2.5 18 2.5ZM18 4.5C25.4558 4.5 31.5 10.5442 31.5 18C31.5 25.4558 25.4558 31.5 18 31.5C10.5442 31.5 4.5 25.4558 4.5 18C4.5 10.5442 10.5442 4.5 18 4.5Z" 
+            fill="currentColor"
+            opacity="0.8"
+          />
+          {/* Energy Breaks in outer ring */}
+          <rect x="17" y="1" width="2" height="4" fill="#000" className="mix-blend-overlay" />
+          <rect x="17" y="31" width="2" height="4" fill="#000" className="mix-blend-overlay" />
+          <rect x="1" y="17" width="4" height="2" fill="#000" className="mix-blend-overlay" />
+          <rect x="31" y="17" width="4" height="2" fill="#000" className="mix-blend-overlay" />
+
+          {/* Inner Core Hexagon Structure */}
+          <path 
+            d="M18 8L26.6603 13V23L18 28L9.33975 23V13L18 8Z" 
+            stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"
+          />
+          
+          {/* The Central "S" Energy Plates (Solid Fill) */}
+          {/* Top Plate */}
+          <path d="M18 10L24 13.5V17H15L12 14.5V13.5L18 10Z" fill="currentColor"/>
+          {/* Bottom Plate */}
+          <path d="M18 26L12 22.5V19H21L24 21.5V22.5L18 26Z" fill="currentColor"/>
+          
+          {/* Central Conduit Nodes (The glowing dots) */}
+          <circle cx="18" cy="18" r="2" fill="currentColor" className="group-hover:animate-pulse"/>
+          <circle cx="18" cy="8" r="1" fill="currentColor"/>
+          <circle cx="18" cy="28" r="1" fill="currentColor"/>
+          <circle cx="9.34" cy="13" r="1" fill="currentColor"/>
+          <circle cx="26.66" cy="13" r="1" fill="currentColor"/>
+          <circle cx="9.34" cy="23" r="1" fill="currentColor"/>
+          <circle cx="26.66" cy="23" r="1" fill="currentColor"/>
+
+      </svg>
