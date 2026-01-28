@@ -2747,9 +2747,365 @@
 
 
 
+// 'use client';
+
+// // 1. Added 'Variants' to the import list
+// import { motion, useScroll, useTransform, AnimatePresence, Variants } from 'framer-motion';
+// import { useRef, useState, useEffect } from 'react';
+// import { ArrowDownRight, ArrowLeft, Database, Code, Terminal, Lock, AlertTriangle, Cpu } from 'lucide-react';
+
+// // Components
+// import DataSculpture from '@/components/DataSculpture'; 
+// import CustomCursor from '@/components/CustomCursor';
+// import HeroTypewriter from '@/components/HeroTypewriter'; 
+// import TechTicker from '@/components/TechTicker'; 
+
+// // --- HELPER: TEXT SCRAMBLER ---
+// const ScrambleText = ({ text, active, className }: { text: string, active: boolean, className?: string }) => {
+//   const [display, setDisplay] = useState(text);
+//   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+
+//   useEffect(() => {
+//     if (!active) {
+//         setDisplay(text);
+//         return;
+//     }
+//     let interval: NodeJS.Timeout;
+//     let iteration = 0;
+//     interval = setInterval(() => {
+//       setDisplay(
+//         text.split("").map((letter, index) => {
+//             if (index < iteration) return text[index];
+//             return chars[Math.floor(Math.random() * chars.length)];
+//           }).join("")
+//       );
+//       if (iteration >= text.length) clearInterval(interval);
+//       iteration += 1 / 3; 
+//     }, 30);
+//     return () => clearInterval(interval);
+//   }, [active, text]);
+//   return <span className={className}>{display}</span>;
+// };
+
+// // --- COMPONENT: THE JARVIS HUD BACKGROUND ---
+// const JarvisBackdrop = () => {
+//     return (
+//         <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 flex items-center justify-center bg-black">
+            
+//             {/* 1. MOVING FLOOR GRID */}
+//             <div className="absolute inset-0 opacity-40" 
+//                  style={{ 
+//                      backgroundImage: 'linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px)', 
+//                      backgroundSize: '60px 60px',
+//                      transform: 'perspective(600px) rotateX(60deg) translateY(0%) translateZ(-200px)',
+//                      maskImage: 'linear-gradient(to bottom, transparent 0%, black 40%, black 100%)' 
+//                  }}>
+//                  <motion.div 
+//                     animate={{ top: ['0%', '100%'] }}
+//                     transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+//                     className="absolute w-full h-[2px] bg-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.8)]"
+//                  />
+//             </div>
+
+//             {/* 2. THE REACTOR RINGS */}
+//             <div className="relative z-0 opacity-60 scale-125 md:scale-150">
+//                 <motion.div 
+//                     animate={{ rotate: 360 }}
+//                     transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+//                     className="absolute inset-0 w-[600px] h-[600px] border-[1px] border-dashed border-white/30 rounded-full -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2"
+//                 />
+//                 <motion.div 
+//                     animate={{ rotate: -360 }}
+//                     transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+//                     className="absolute inset-0 w-[450px] h-[450px] border-[2px] border-white/40 rounded-full -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 shadow-[0_0_30px_rgba(255,255,255,0.1)]"
+//                 >
+//                     <div className="absolute top-0 left-1/2 w-2 h-2 bg-white rounded-full -translate-x-1/2 -translate-y-1 shadow-[0_0_10px_white]"></div>
+//                     <div className="absolute bottom-0 left-1/2 w-2 h-2 bg-white rounded-full -translate-x-1/2 translate-y-1 shadow-[0_0_10px_white]"></div>
+//                 </motion.div>
+//                 <motion.div 
+//                     animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.8, 0.5] }}
+//                     transition={{ duration: 2, repeat: Infinity }}
+//                     className="absolute w-[100px] h-[100px] bg-white/5 rounded-full backdrop-blur-md border border-white/30 -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 flex items-center justify-center shadow-[0_0_50px_rgba(255,255,255,0.2)]"
+//                 >
+//                     <Cpu className="w-8 h-8 text-white/70" />
+//                 </motion.div>
+//             </div>
+
+//             {/* 3. VIGNETTE */}
+//             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,black_120%)] z-10 pointer-events-none"></div>
+//         </div>
+//     );
+// };
+
+
+// export default function Home() {
+//   const containerRef = useRef(null);
+//   const [status, setStatus] = useState('idle'); 
+//   const [isExiting, setIsExiting] = useState(false); 
+  
+//   const { scrollYProgress } = useScroll({
+//     target: containerRef,
+//     offset: ["start start", "end end"]
+//   });
+
+//   const heroTextY = useTransform(scrollYProgress, [0, 0.15], ["0%", "-100%"]);
+//   const heroOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
+
+//   // --- PREVENT SCROLLING WHEN OVERLAY IS OPEN ---
+//   useEffect(() => {
+//     if (status === 'breached') {
+//         document.body.style.overflow = 'hidden';
+//     } else {
+//         document.body.style.overflow = 'unset';
+//     }
+//     return () => { document.body.style.overflow = 'unset'; }
+//   }, [status]);
+
+//   const handleTriggerEnter = () => {
+//       if (status === 'idle') {
+//           setStatus('scanning');
+//           setTimeout(() => setStatus('critical'), 1500);
+//           setTimeout(() => setStatus('breached'), 2200);
+//       }
+//   };
+
+//   // --- ANIMATION VARIANTS (Fixed Typing) ---
+//   // 2. Explicitly typed as 'Variants' to solve the TS Error
+//   const overlayVariants: Variants = {
+//     hidden: { 
+//         opacity: 0,
+//         scale: 1, 
+//     },
+//     visible: { 
+//         opacity: 1,
+//         scale: 1,
+//         filter: ["brightness(1)"],
+//         transition: { duration: 0.5 }
+//     },
+//     exit: { 
+//         scaleY: [1, 0.005, 0.005],
+//         scaleX: [1, 1, 0],
+//         opacity: [1, 1, 0],
+//         // 3. Changed filter to an array to match the keyframe structure of scale/opacity
+//         filter: ["brightness(1)", "brightness(1)", "brightness(2)"],
+//         transition: { 
+//             duration: 0.4, 
+//             times: [0, 0.6, 1],
+//             ease: "easeInOut"
+//         }
+//     }
+//   };
+
+//   const handleReturn = async () => {
+//     setIsExiting(true); 
+//     await new Promise(r => setTimeout(r, 400));
+//     setStatus('rebooting'); 
+//     setTimeout(() => {
+//         window.scrollTo({ top: 0, behavior: "auto" }); 
+//         setStatus('idle');
+//         setIsExiting(false);
+//     }, 100); 
+//   };
+
+//   return (
+//     <main ref={containerRef} className="relative min-h-[150vh] bg-white selection:bg-black selection:text-white">
+      
+//       <CustomCursor />
+
+//       {/* LAYER 0: Background */}
+//       <div className="fixed inset-0 z-0 pointer-events-none">
+//           <DataSculpture />
+//       </div>
+
+//       {/* --- REBOOT FLASH OVERLAY --- */}
+//       <AnimatePresence>
+//           {status === 'rebooting' && (
+//               <motion.div 
+//                   initial={{ opacity: 0 }}
+//                   animate={{ opacity: 1 }}
+//                   exit={{ opacity: 0 }} 
+//                   transition={{ duration: 0.1 }} 
+//                   className="fixed inset-0 z-[9999] bg-white pointer-events-none"
+//               />
+//           )}
+//       </AnimatePresence>
+
+//       {/* SECTION 1: HERO */}
+//       <section className="relative z-10 h-screen flex flex-col justify-center px-6 md:px-12 pointer-events-none">
+//         <motion.div style={{ y: heroTextY, opacity: heroOpacity }} className="max-w-[90vw]">
+//           <div className="text-xs font-mono text-zinc-400 mb-6 tracking-widest uppercase">Data Analyst & Architect</div>
+//           <h1 className="text-[12vw] leading-[0.8] font-bold tracking-tighter text-black">
+//             RAW DATA <br /><span className="text-zinc-300">REFINED</span> <br />INSIGHT.
+//           </h1>
+//         </motion.div>
+//         <motion.div style={{ opacity: heroOpacity }} className="absolute bottom-12 right-12 flex gap-4 items-center text-xs font-mono text-zinc-400">
+//             <span className="animate-pulse">INITIALIZING_SYSTEM</span>
+//             <ArrowDownRight className="w-4 h-4" />
+//         </motion.div>
+//       </section>
+
+//       {/* SECTION 2: THE TERMINAL SPLIT */}
+//       <div className="relative z-20 w-full">
+//         <div className="grid grid-cols-1 lg:grid-cols-2">
+            
+//             {/* LEFT SIDE: Fixed Window */}
+//             <div className="hidden lg:flex h-screen sticky top-0 flex-col justify-between px-12 pb-12 pt-32 pointer-events-none">
+//                 <div className="text-xs font-mono text-black/30 uppercase tracking-widest flex items-center gap-2">
+//                     <span className={`w-2 h-2 rounded-full ${status === 'scanning' ? 'bg-red-500 animate-ping' : 'bg-green-500 animate-pulse'}`}></span>
+//                     System_Status: {status === 'idle' ? 'Active' : 'WARNING'}
+//                 </div>
+//             </div>
+
+//             {/* RIGHT SIDE: The Terminal */}
+//             <div className="bg-black text-white min-h-screen p-8 md:p-20 flex flex-col gap-12 shadow-[-50px_0_100px_rgba(0,0,0,0.1)] mt-[10vh]">
+//                 <div className="pt-24">
+//                     <div className="text-xs font-mono text-zinc-500 mb-8 uppercase tracking-widest">[ // Introduction ]</div>
+//                     <HeroTypewriter />
+//                 </div>
+//                 <div>
+//                      <div className="text-xs font-mono text-zinc-500 mb-8 uppercase tracking-widest">[ // Stack ]</div>
+//                     <TechTicker />
+//                 </div>
+
+//                 {/* THE TRIGGER ZONE */}
+//                 <div className="pb-32 pt-8 border-t border-zinc-800">
+//                     <div className="h-[20vh] w-full flex flex-col items-center justify-center gap-4 opacity-70">
+//                         {status === 'scanning' || status === 'critical' ? (
+//                             <Lock className="w-6 h-6 text-red-500 animate-pulse" />
+//                         ) : (
+//                             <Lock className="w-6 h-6 text-zinc-600" />
+//                         )}
+//                         <p className="font-mono text-sm text-zinc-400 uppercase tracking-widest">Restricted Area Below</p>
+//                     </div>
+
+//                     <motion.div 
+//                         initial={{ opacity: 0 }}
+//                         whileInView={{ opacity: 1 }}
+//                         viewport={{ amount: 0.8 }} 
+//                         onViewportEnter={handleTriggerEnter}
+//                         animate={status === 'critical' ? { x: [-5, 5, -5, 5, 0], transition: { duration: 0.2 } } : {}}
+//                         className={`relative h-48 w-full border rounded-lg overflow-hidden mt-4 transition-colors duration-300 ${status === 'critical' ? 'border-red-500 bg-red-950/30' : 'border-red-900/30 bg-red-950/10'}`}
+//                     >
+//                         {(status === 'scanning' || status === 'critical') && (
+//                             <div className="absolute inset-0 flex flex-col items-center justify-center text-red-500 font-mono z-10">
+//                                 <AlertTriangle className={`w-8 h-8 mb-4 ${status === 'critical' ? 'animate-bounce' : 'animate-pulse'}`} />
+//                                 <div className="text-sm tracking-widest font-bold"><ScrambleText text="DETECTING BREACH..." active={true} /></div>
+//                                 <div className="text-xs mt-2 text-red-400/70">{status === 'critical' ? 'CRITICAL FAILURE' : 'BYPASSING FIREWALL'}</div>
+//                             </div>
+//                         )}
+//                         {(status === 'scanning' || status === 'critical') && (
+//                             <motion.div 
+//                                 initial={{ width: "0%" }}
+//                                 animate={{ width: "100%" }}
+//                                 transition={{ duration: 2.2, ease: "linear" }}
+//                                 className="absolute bottom-0 left-0 h-1 bg-red-500 shadow-[0_0_20px_rgba(220,38,38,0.8)]"
+//                             />
+//                         )}
+//                         <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+//                     </motion.div>
+//                 </div>
+//             </div>
+//         </div>
+//       </div>
+
+//       {/* ======================================================== */}
+//       {/* THE "JARVIS" OVERLAY                                     */}
+//       {/* ======================================================== */}
+//       {status === 'breached' && (
+//             <motion.div 
+//                 key="jarvis-interface"
+//                 variants={overlayVariants}
+//                 initial="hidden"
+//                 animate={isExiting ? "exit" : "visible"}
+//                 className="fixed inset-0 z-[100] bg-black text-white overflow-hidden origin-center" 
+//             >
+//                 {/* --- BACKGROUND --- */}
+//                 <JarvisBackdrop />
+
+//                 {/* EXIT BUTTON */}
+//                 <button 
+//                     onClick={handleReturn}
+//                     className="fixed top-8 left-8 z-[999] text-white/40 hover:text-white flex items-center gap-2 font-mono text-xs uppercase tracking-widest cursor-pointer group bg-black/50 px-4 py-2 border border-white/10 rounded-full"
+//                 >
+//                     <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> 
+//                     Exit Archive
+//                 </button>
+
+//                 {/* SCROLLING CONTENT LAYER */}
+//                 <motion.div 
+//                     animate={{ opacity: isExiting ? 0 : 1 }}
+//                     transition={{ duration: 0.2 }}
+//                     className="relative z-10 w-full h-full flex items-center overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar pl-[10vw]"
+//                 >
+                    
+//                     {/* Intro Title */}
+//                     <div className="min-w-[40vw] pr-20 snap-center shrink-0">
+//                         <h2 className="text-[10vw] leading-none font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-600 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+//                             DEEP <br/> STORAGE
+//                         </h2>
+//                         <div className="mt-8 font-mono text-cyan-400 text-xs tracking-widest border-l-2 border-cyan-400 pl-4 flex flex-col gap-1 shadow-[0_0_10px_rgba(34,211,238,0.2)]">
+//                             <span className="font-bold"><ScrambleText text="WARNING: ENCRYPTION BROKEN" active={true} /></span>
+//                             <span className="text-cyan-400/60">ACCESS LEVEL: UNRESTRICTED</span>
+//                         </div>
+//                     </div>
+
+//                     {/* CARD 1 */}
+//                     <div className="min-w-[85vw] md:min-w-[45vw] h-[60vh] bg-zinc-950/80 backdrop-blur-md border border-white/20 p-12 flex flex-col justify-between hover:bg-zinc-900/90 hover:border-cyan-400/50 transition-all duration-500 mr-12 snap-center rounded-sm group relative overflow-hidden">
+//                          <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl group-hover:bg-cyan-500/20 transition-all"></div>
+//                         <div className="flex justify-between items-start relative z-10">
+//                              <div className="p-3 bg-white/5 border border-white/10 rounded-full group-hover:scale-110 transition-transform"><Database className="w-6 h-6 text-cyan-300" /></div>
+//                              <div className="font-mono text-xs text-zinc-500">[ 001 ]</div>
+//                         </div>
+//                         <div className="relative z-10">
+//                             <h3 className="text-4xl md:text-5xl font-bold mb-6 mt-12 text-white group-hover:text-cyan-100 transition-colors">WAREHOUSE<br/>OPTIMIZATION</h3>
+//                             <p className="text-zinc-400 font-mono text-sm leading-relaxed max-w-md border-l border-zinc-700 pl-4">
+//                                 Re-engineered legacy SQL architecture. <span className="text-cyan-400">Query time -85%</span>. Storage costs reduced by $20k/mo.
+//                             </p>
+//                         </div>
+//                     </div>
+
+//                     {/* CARD 2 */}
+//                     <div className="min-w-[85vw] md:min-w-[45vw] h-[60vh] bg-zinc-950/80 backdrop-blur-md border border-white/20 p-12 flex flex-col justify-between hover:bg-zinc-900/90 hover:border-purple-400/50 transition-all duration-500 mr-12 snap-center rounded-sm group relative overflow-hidden">
+//                         <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl group-hover:bg-purple-500/20 transition-all"></div>
+//                         <div className="flex justify-between items-start relative z-10">
+//                              <div className="p-3 bg-white/5 border border-white/10 rounded-full group-hover:scale-110 transition-transform"><Code className="w-6 h-6 text-purple-300" /></div>
+//                              <div className="font-mono text-xs text-zinc-500">[ 002 ]</div>
+//                         </div>
+//                         <div className="relative z-10">
+//                             <h3 className="text-4xl md:text-5xl font-bold mb-6 mt-12 text-white group-hover:text-purple-100 transition-colors">PREDICTION<br/>ENGINE API</h3>
+//                             <p className="text-zinc-400 font-mono text-sm leading-relaxed max-w-md border-l border-zinc-700 pl-4">
+//                                 Flask-based REST API. Serving 400+ endpoints. <span className="text-purple-400">Redis Cache & Celery</span> integrated for async tasks.
+//                             </p>
+//                         </div>
+//                     </div>
+
+//                      {/* CARD 3 */}
+//                      <div className="min-w-[85vw] md:min-w-[45vw] h-[60vh] bg-zinc-950/80 backdrop-blur-md border border-white/20 p-12 flex flex-col justify-between hover:bg-zinc-900/90 hover:border-orange-400/50 transition-all duration-500 mr-12 snap-center rounded-sm group relative overflow-hidden">
+//                         <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl group-hover:bg-orange-500/20 transition-all"></div>
+//                         <div className="flex justify-between items-start relative z-10">
+//                              <div className="p-3 bg-white/5 border border-white/10 rounded-full group-hover:scale-110 transition-transform"><Terminal className="w-6 h-6 text-orange-300" /></div>
+//                              <div className="font-mono text-xs text-zinc-500">[ 003 ]</div>
+//                         </div>
+//                         <div className="relative z-10">
+//                             <h3 className="text-4xl md:text-5xl font-bold mb-6 mt-12 text-white group-hover:text-orange-100 transition-colors">RUST CLI<br/>DASHBOARD</h3>
+//                             <p className="text-zinc-400 font-mono text-sm leading-relaxed max-w-md border-l border-zinc-700 pl-4">
+//                                 Custom terminal UI for server monitoring. <span className="text-orange-400">Zero-latency</span> rendering in low-bandwidth environments.
+//                             </p>
+//                         </div>
+//                     </div>
+
+//                     <div className="min-w-[10vw] snap-center"></div>
+//                 </motion.div>
+//             </motion.div>
+//       )}
+//     </main>
+//   );
+// }
+
+
 'use client';
 
-// 1. Added 'Variants' to the import list
+// 1. Added 'Variants' to the import list for TypeScript safety
 import { motion, useScroll, useTransform, AnimatePresence, Variants } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
 import { ArrowDownRight, ArrowLeft, Database, Code, Terminal, Lock, AlertTriangle, Cpu } from 'lucide-react';
@@ -2869,8 +3225,7 @@ export default function Home() {
       }
   };
 
-  // --- ANIMATION VARIANTS (Fixed Typing) ---
-  // 2. Explicitly typed as 'Variants' to solve the TS Error
+  // --- ANIMATION VARIANTS ---
   const overlayVariants: Variants = {
     hidden: { 
         opacity: 0,
@@ -2886,7 +3241,6 @@ export default function Home() {
         scaleY: [1, 0.005, 0.005],
         scaleX: [1, 1, 0],
         opacity: [1, 1, 0],
-        // 3. Changed filter to an array to match the keyframe structure of scale/opacity
         filter: ["brightness(1)", "brightness(1)", "brightness(2)"],
         transition: { 
             duration: 0.4, 
@@ -2908,9 +3262,17 @@ export default function Home() {
   };
 
   return (
-    <main ref={containerRef} className="relative min-h-[150vh] bg-white selection:bg-black selection:text-white">
+    <main 
+      ref={containerRef} 
+      className="relative min-h-[150vh] bg-white selection:bg-black selection:text-white"
+    >
       
-      <CustomCursor />
+      {/* --- THE FIX ---
+         We pass 'isInverse' based on the status.
+         status === 'breached' -> Overlay is open -> Cursor becomes White (isInverse=true)
+         Any other status -> Main page -> Cursor becomes Black (isInverse=false)
+      */}
+      <CustomCursor isInverse={status === 'breached'} />
 
       {/* LAYER 0: Background */}
       <div className="fixed inset-0 z-0 pointer-events-none">

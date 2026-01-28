@@ -189,15 +189,131 @@
 // }
 
 
+// 'use client';
+
+// import { useEffect, useState } from 'react';
+
+// export default function CustomCursor() {
+//   const [position, setPosition] = useState({ x: 0, y: 0 });
+//   const [isHovering, setIsHovering] = useState(false);
+//   const [isVisible, setIsVisible] = useState(false);
+//   const [isMounted, setIsMounted] = useState(false);
+
+//   useEffect(() => {
+//     setIsMounted(true);
+
+//     const updatePosition = (e: MouseEvent) => {
+//       setPosition({ x: e.clientX, y: e.clientY });
+//       if (!isVisible) setIsVisible(true);
+//     };
+
+//     const handleHoverCheck = (e: MouseEvent) => {
+//       const target = e.target as HTMLElement;
+//       // Triggers hover effect on links, buttons, inputs, and text headers
+//       const isHoverable = target.matches('a, button, input, textarea, select, [role="button"], h1, h2, h3, h4, p, span, a *, button *');
+//       setIsHovering(isHoverable);
+//     };
+
+//     window.addEventListener('mousemove', updatePosition);
+//     document.addEventListener('mouseover', handleHoverCheck);
+
+//     return () => {
+//       window.removeEventListener('mousemove', updatePosition);
+//       document.removeEventListener('mouseover', handleHoverCheck);
+//     };
+//   }, [isVisible]);
+
+//   if (!isMounted) return null;
+
+//   return (
+//     <div
+//       className="fixed top-0 left-0 pointer-events-none z-[9999]"
+//       style={{
+//         transform: `translate3d(${position.x}px, ${position.y}px, 0) translate(-50%, -50%)`,
+//         opacity: isVisible ? 1 : 0,
+//       }}
+//     >
+//       {/* DESIGN: 
+//          1. bg-black -> Visible on white background
+//          2. border-white -> Visible if it crosses black text
+//       */}
+//       <div
+//         className={`
+//           rounded-full bg-black border border-white/20 transition-all duration-300 ease-out
+//           ${isHovering ? 'h-8 w-8 opacity-20' : 'h-6.5 w-6.5 opacity-100'}
+//         `}
+//       />
+//     </div>
+//   );
+// }
+
+// 'use client';
+
+// import { useEffect, useState } from 'react';
+
+// export default function CustomCursor({ isInverse = false }: { isInverse?: boolean }) {
+//   const [position, setPosition] = useState({ x: 0, y: 0 });
+//   const [isHovering, setIsHovering] = useState(false);
+//   const [isVisible, setIsVisible] = useState(false);
+//   const [isMounted, setIsMounted] = useState(false);
+
+//   useEffect(() => {
+//     setIsMounted(true);
+
+//     const updatePosition = (e: MouseEvent) => {
+//       setPosition({ x: e.clientX, y: e.clientY });
+//       if (!isVisible) setIsVisible(true);
+//     };
+
+//     const handleHoverCheck = (e: MouseEvent) => {
+//       const target = e.target as HTMLElement;
+//       const isHoverable = target.matches('a, button, input, textarea, select, [role="button"], h1, h2, h3, h4, p, span, a *, button *');
+//       setIsHovering(isHoverable);
+//     };
+
+//     window.addEventListener('mousemove', updatePosition);
+//     document.addEventListener('mouseover', handleHoverCheck);
+
+//     return () => {
+//       window.removeEventListener('mousemove', updatePosition);
+//       document.removeEventListener('mouseover', handleHoverCheck);
+//     };
+//   }, [isVisible]);
+
+//   if (!isMounted) return null;
+
+//   return (
+//     <div
+//       className="fixed top-0 left-0 pointer-events-none z-[9999]"
+//       style={{
+//         transform: `translate3d(${position.x}px, ${position.y}px, 0) translate(-50%, -50%)`,
+//         opacity: isVisible ? 1 : 0,
+//       }}
+//     >
+//       <div
+//         className={`
+//           rounded-full border transition-all duration-300 ease-out
+//           ${isInverse ? 'bg-white border-transparent' : 'bg-black border-white/20'}
+//           ${isHovering ? 'h-10 w-10 opacity-30' : 'h-6 w-6 opacity-100'}
+//         `}
+//       />
+//     </div>
+//   );
+// }
+
+
 'use client';
 
 import { useEffect, useState } from 'react';
 
-export default function CustomCursor() {
+export default function CustomCursor({ isInverse = false }: { isInverse?: boolean }) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  
+  // This tracks if we are specifically over a black section
+  const [isOnDarkBackground, setIsOnDarkBackground] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -209,9 +325,32 @@ export default function CustomCursor() {
 
     const handleHoverCheck = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      // Triggers hover effect on links, buttons, inputs, and text headers
+
+      // 1. Hover State (Clickables)
       const isHoverable = target.matches('a, button, input, textarea, select, [role="button"], h1, h2, h3, h4, p, span, a *, button *');
       setIsHovering(isHoverable);
+
+      // 2. Color Logic
+      // Traverse up the DOM tree to see what color section we are in
+      let el: HTMLElement | null = target;
+      let foundDark = false;
+
+      while (el && el !== document.body) {
+          // If we hit a Black section -> Cursor White, Stop looking
+          if (el.classList.contains('bg-black')) {
+              foundDark = true;
+              break;
+          }
+          // If we hit a White section -> Cursor Black, Stop looking
+          // This prevents the cursor from turning white if the body has a black background
+          if (el.classList.contains('bg-white')) {
+              foundDark = false;
+              break;
+          }
+          el = el.parentElement;
+      }
+      
+      setIsOnDarkBackground(foundDark);
     };
 
     window.addEventListener('mousemove', updatePosition);
@@ -225,6 +364,11 @@ export default function CustomCursor() {
 
   if (!isMounted) return null;
 
+  // Logic: 
+  // 1. isInverse (from props) -> Force White (used for Overlay)
+  // 2. isOnDarkBackground -> Found .bg-black -> Force White
+  const shouldBeWhite = isInverse || isOnDarkBackground;
+
   return (
     <div
       className="fixed top-0 left-0 pointer-events-none z-[9999]"
@@ -233,14 +377,11 @@ export default function CustomCursor() {
         opacity: isVisible ? 1 : 0,
       }}
     >
-      {/* DESIGN: 
-         1. bg-black -> Visible on white background
-         2. border-white -> Visible if it crosses black text
-      */}
       <div
         className={`
-          rounded-full bg-black border border-white/20 transition-all duration-300 ease-out
-          ${isHovering ? 'h-8 w-8 opacity-20' : 'h-3.5 w-3.5 opacity-100'}
+          rounded-full border transition-all duration-300 ease-out
+          ${shouldBeWhite ? 'bg-white border-transparent' : 'bg-black border-white/20'}
+          ${isHovering ? 'h-10 w-10 opacity-30' : 'h-6 w-6 opacity-100'}
         `}
       />
     </div>

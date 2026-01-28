@@ -73,14 +73,56 @@
 //   );
 // }
 
+// import type { Metadata } from "next";
+// import { Geist, Geist_Mono } from "next/font/google";
+// import "./globals.css";
+// import CustomCursor from '@/components/CustomCursor';
+// import Navbar from '@/components/Navbar'; // <--- Import the new Navbar
+
+// const geistSans = Geist({
+//   variable: "--font-geist-sans", // We can use these variables in tailwind config later if needed
+//   subsets: ["latin"],
+// });
+
+// const geistMono = Geist_Mono({
+//   variable: "--font-geist-mono",
+//   subsets: ["latin"],
+// });
+
+// // Update the title from "Create Next App" to your Brand
+// export const metadata: Metadata = {
+//   title: "Siddhartha | Data Architect",
+//   description: "Portfolio of a Data Analyst & Architect",
+// };
+
+// export default function RootLayout({
+//   children,
+// }: Readonly<{
+//   children: React.ReactNode;
+// }>) {
+//   return (
+//     <html lang="en">
+//       <body
+//         // Added 'bg-black' and 'text-white' to set the global dark theme foundation
+//         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}
+//       >
+//         <CustomCursor />
+//         <Navbar /> {/* <--- The Nav sits here, on top of every page */}
+//         {children}
+//       </body>
+//     </html>
+//   );
+// }
+
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import CustomCursor from '@/components/CustomCursor';
-import Navbar from '@/components/Navbar'; // <--- Import the new Navbar
+import Navbar from '@/components/Navbar';
 
 const geistSans = Geist({
-  variable: "--font-geist-sans", // We can use these variables in tailwind config later if needed
+  variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
@@ -89,7 +131,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// Update the title from "Create Next App" to your Brand
 export const metadata: Metadata = {
   title: "Siddhartha | Data Architect",
   description: "Portfolio of a Data Analyst & Architect",
@@ -103,11 +144,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        // Added 'bg-black' and 'text-white' to set the global dark theme foundation
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}
+        // ADDED 'cursor-none' HERE vvv
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white cursor-none`}
       >
         <CustomCursor />
-        <Navbar /> {/* <--- The Nav sits here, on top of every page */}
+        <Navbar />
         {children}
       </body>
     </html>
