@@ -1274,6 +1274,318 @@
 // }
 
 
+// 'use client';
+
+// import { motion } from 'framer-motion';
+// import { 
+//   BarChart4, 
+//   Binary, 
+//   BrainCircuit, 
+//   Briefcase, 
+//   Calculator, 
+//   Database, 
+//   Globe, 
+//   LineChart, 
+//   MapPin, 
+//   PieChart, 
+//   Scan, 
+//   Search, 
+//   ShieldCheck, 
+//   Terminal, 
+//   TrendingUp, 
+//   Zap 
+// } from 'lucide-react';
+// import Navbar from '@/components/Navbar';
+// import Link from 'next/link';
+
+// // --- SUB-COMPONENTS FOR JARVIS UI ---
+
+// // A Reusable Holographic Panel with Corner Brackets
+// const HoloPanel = ({ children, className = "", delay = 0 }: { children: React.ReactNode, className?: string, delay?: number }) => (
+//   <motion.div 
+//     initial={{ opacity: 0, scale: 0.9, borderColor: 'rgba(6,182,212,0)' }}
+//     animate={{ opacity: 1, scale: 1, borderColor: 'rgba(6,182,212,0.3)' }}
+//     transition={{ duration: 0.5, delay }}
+//     className={`relative bg-black/60 backdrop-blur-md border border-cyan-500/30 p-6 ${className}`}
+//   >
+//     {/* Corner Brackets */}
+//     <div className="absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-cyan-400"></div>
+//     <div className="absolute top-0 right-0 w-4 h-4 border-r-2 border-t-2 border-cyan-400"></div>
+//     <div className="absolute bottom-0 left-0 w-4 h-4 border-l-2 border-b-2 border-cyan-400"></div>
+//     <div className="absolute bottom-0 right-0 w-4 h-4 border-r-2 border-b-2 border-cyan-400"></div>
+    
+//     {/* Scanline Overlay */}
+//     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent opacity-50 pointer-events-none bg-[length:100%_4px]"></div>
+    
+//     {children}
+//   </motion.div>
+// );
+
+// // A Rotating Data Ring
+// const DataRing = () => (
+//     <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
+//         <div className="w-[500px] h-[500px] border border-cyan-500/30 rounded-full animate-[spin_10s_linear_infinite]"></div>
+//         <div className="absolute w-[450px] h-[450px] border border-dashed border-cyan-500/30 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
+//         <div className="absolute w-[300px] h-[300px] border-2 border-t-transparent border-b-transparent border-cyan-500/20 rounded-full animate-spin"></div>
+//     </div>
+// );
+
+// export default function AboutPage() {
+//   return (
+//     <main className="min-h-screen bg-black text-cyan-50 font-mono selection:bg-cyan-500/30 overflow-x-hidden">
+      
+//       {/* --- BACKGROUND FX --- */}
+//       <div className="fixed inset-0 pointer-events-none z-0">
+//           <div className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.05)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+//           <div className="absolute top-0 left-0 w-full h-1 bg-cyan-500 shadow-[0_0_20px_rgba(6,182,212,1)] animate-scanline"></div>
+//           <DataRing />
+//       </div>
+
+//       <Navbar />
+
+//       <div className="relative z-10 container mx-auto px-4 pt-32 pb-24 max-w-7xl">
+        
+//         {/* --- HEADER: IDENTITY VERIFICATION --- */}
+//         <div className="flex flex-col md:flex-row justify-between items-end border-b-2 border-cyan-900/50 pb-6 mb-12 relative">
+//             <div className="absolute bottom-0 right-0 w-32 h-2 bg-cyan-500/50"></div>
+            
+//             <motion.div 
+//                 initial={{ x: -50, opacity: 0 }}
+//                 animate={{ x: 0, opacity: 1 }}
+//                 className="space-y-2"
+//             >
+//                 <div className="flex items-center gap-2 text-cyan-400 text-xs tracking-[0.3em] uppercase animate-pulse">
+//                     <Scan className="w-4 h-4" />
+//                     <span>Identity Confirmed</span>
+//                 </div>
+//                 <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-white uppercase" style={{ textShadow: "0 0 20px rgba(6,182,212,0.5)" }}>
+//                     SID<span className="text-cyan-500">.DATA</span>
+//                 </h1>
+//                 <div className="flex flex-wrap gap-4 text-sm text-cyan-200/70 uppercase tracking-widest">
+//                     <span>// Data Scientist</span>
+//                     <span>// Financial Analyst</span>
+//                     <span>// Business Intel</span>
+//                 </div>
+//             </motion.div>
+
+//             <motion.div 
+//                 initial={{ opacity: 0 }} 
+//                 animate={{ opacity: 1 }} 
+//                 className="mt-6 md:mt-0 text-right space-y-1"
+//             >
+//                 <div className="flex items-center justify-end gap-2 text-cyan-400">
+//                     <MapPin size={16} />
+//                     <span className="font-bold">SECTOR: IRVING_TX</span>
+//                 </div>
+//                 <div className="text-[10px] text-zinc-500">COORDS: 32.8140° N, 96.9489° W</div>
+//             </motion.div>
+//         </div>
+
+//         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+//             {/* --- COLUMN 1: THE CORE (Personal Data) --- */}
+//             <div className="lg:col-span-8 space-y-6">
+                
+//                 {/* 1. OPERATIVE SUMMARY (Expanded) */}
+//                 <HoloPanel className="flex flex-col gap-6" delay={0.2}>
+//                     <div className="flex items-center gap-4 border-b border-cyan-500/30 pb-4">
+//                         <div className="p-3 bg-cyan-500/10 border border-cyan-500/30 rounded-full">
+//                             <Terminal className="text-cyan-400 w-6 h-6" />
+//                         </div>
+//                         <h2 className="text-xl font-bold text-white tracking-widest">
+//                             OPERATIVE_PROFILE
+//                         </h2>
+//                     </div>
+                    
+//                     <div className="space-y-5 text-zinc-300 leading-relaxed">
+//                         <p className="text-lg text-white font-medium">
+//                             I operate at the intersection of <span className="text-cyan-400">Data Science</span>, <span className="text-cyan-400">Finance</span>, and <span className="text-cyan-400">Business Strategy</span>.
+//                         </p>
+//                         <p>
+//                             My mission is to translate complex, unstructured datasets into clear, profitable strategies. I don't just build models; I build the financial roadmaps and predictive engines that drive executive decision-making. 
+//                         </p>
+//                         <p>
+//                             With a Master’s in Data Science from the <strong>University at Buffalo</strong>, I possess the technical rigor to handle Big Data architectures and the business acumen to perform deep financial modeling. Whether analyzing market risks, forecasting quarterly trends, or optimizing supply chains, I ensure that every number tells a story.
+//                         </p>
+//                         <div className="flex gap-3 pt-2">
+//                              <span className="px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 rounded text-xs text-cyan-300">Predictive Analytics</span>
+//                              <span className="px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 rounded text-xs text-cyan-300">Financial Modeling</span>
+//                              <span className="px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 rounded text-xs text-cyan-300">Risk Assessment</span>
+//                         </div>
+//                     </div>
+//                 </HoloPanel>
+
+//                 {/* 2. ACADEMIC DATABASE */}
+//                 <HoloPanel delay={0.4}>
+//                      <div className="flex items-center justify-between mb-6">
+//                         <h3 className="text-lg font-bold text-white flex items-center gap-2">
+//                             <Database className="text-cyan-400 w-5 h-5" />
+//                             KNOWLEDGE_BASE
+//                         </h3>
+//                         <span className="text-[10px] bg-cyan-900/50 text-cyan-400 px-2 py-1 border border-cyan-500/30">
+//                             VERIFIED: UB_NY
+//                         </span>
+//                      </div>
+                     
+//                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//                         <div>
+//                             <div className="text-2xl font-bold text-white mb-1">M.S. Data Science</div>
+//                             <div className="text-cyan-500 text-sm uppercase tracking-wider mb-4">University at Buffalo</div>
+//                             <p className="text-xs text-zinc-400 border-l border-cyan-500/30 pl-3 leading-5">
+//                                 Rigorous coursework in Distributed Systems, Statistical Mining, and Machine Learning Algorithms.
+//                             </p>
+//                         </div>
+//                         <div className="space-y-3">
+//                             <div className="group">
+//                                 <div className="flex justify-between text-xs text-cyan-300 uppercase mb-1">
+//                                     <span>Statistical Analysis</span>
+//                                     <span>98%</span>
+//                                 </div>
+//                                 <div className="h-1 w-full bg-zinc-800"><div className="h-full w-[98%] bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.8)]"></div></div>
+//                             </div>
+                            
+//                             <div className="group">
+//                                 <div className="flex justify-between text-xs text-cyan-300 uppercase mb-1">
+//                                     <span>Business Intelligence</span>
+//                                     <span>95%</span>
+//                                 </div>
+//                                 <div className="h-1 w-full bg-zinc-800"><div className="h-full w-[95%] bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.8)]"></div></div>
+//                             </div>
+//                         </div>
+//                      </div>
+//                 </HoloPanel>
+
+//             </div>
+
+//             {/* --- COLUMN 2: MODULES (Skills) --- */}
+//             <div className="lg:col-span-4 space-y-6">
+                
+//                 {/* STATUS BAR */}
+//                 <motion.div 
+//                     initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+//                     className="flex justify-between items-center text-[10px] text-cyan-600 uppercase font-bold tracking-widest border-b border-cyan-900 pb-2"
+//                 >
+//                     <span>System Modules</span>
+//                     <span className="animate-pulse text-green-500">OPTIMIZED</span>
+//                 </motion.div>
+
+//                 {/* TECH STACK CARDS - Updated for Data/Finance */}
+//                 <div className="space-y-4">
+                    
+//                     {/* Module 1: Core Analytics */}
+//                     <HoloPanel className="group hover:bg-cyan-950/20 transition-colors p-4" delay={0.5}>
+//                         <div className="flex items-center gap-3 mb-2">
+//                             <Binary className="text-cyan-400 w-5 h-5" />
+//                             <h4 className="font-bold text-white text-sm">DATA CORE</h4>
+//                         </div>
+//                         <div className="flex flex-wrap gap-2">
+//                             {["Python", "R", "SQL (Advanced)", "SAS", "Excel (VBA)"].map((skill, k) => (
+//                                 <span key={k} className="text-[10px] text-cyan-200 bg-cyan-500/10 px-2 py-1 border border-cyan-500/20 rounded">
+//                                     {skill}
+//                                 </span>
+//                             ))}
+//                         </div>
+//                     </HoloPanel>
+
+//                     {/* Module 2: Visualization */}
+//                     <HoloPanel className="group hover:bg-cyan-950/20 transition-colors p-4" delay={0.6}>
+//                         <div className="flex items-center gap-3 mb-2">
+//                             <PieChart className="text-purple-400 w-5 h-5" />
+//                             <h4 className="font-bold text-white text-sm">VISUALIZATION</h4>
+//                         </div>
+//                         <div className="flex flex-wrap gap-2">
+//                             {["Tableau", "Power BI", "Matplotlib", "Looker", "D3.js"].map((skill, k) => (
+//                                 <span key={k} className="text-[10px] text-purple-200 bg-purple-500/10 px-2 py-1 border border-purple-500/20 rounded">
+//                                     {skill}
+//                                 </span>
+//                             ))}
+//                         </div>
+//                     </HoloPanel>
+
+//                     {/* Module 3: ML & AI */}
+//                     <HoloPanel className="group hover:bg-cyan-950/20 transition-colors p-4" delay={0.7}>
+//                         <div className="flex items-center gap-3 mb-2">
+//                             <BrainCircuit className="text-green-400 w-5 h-5" />
+//                             <h4 className="font-bold text-white text-sm">PREDICTIVE AI</h4>
+//                         </div>
+//                         <div className="flex flex-wrap gap-2">
+//                             {["Scikit-Learn", "TensorFlow", "Pandas", "Regression Models"].map((skill, k) => (
+//                                 <span key={k} className="text-[10px] text-green-200 bg-green-500/10 px-2 py-1 border border-green-500/20 rounded">
+//                                     {skill}
+//                                 </span>
+//                             ))}
+//                         </div>
+//                     </HoloPanel>
+
+//                      {/* Module 4: Finance/Business */}
+//                      <HoloPanel className="group hover:bg-cyan-950/20 transition-colors p-4" delay={0.8}>
+//                         <div className="flex items-center gap-3 mb-2">
+//                             <TrendingUp className="text-orange-400 w-5 h-5" />
+//                             <h4 className="font-bold text-white text-sm">STRATEGY</h4>
+//                         </div>
+//                         <div className="flex flex-wrap gap-2">
+//                             {["Financial Modeling", "Market Research", "Risk Analysis", "A/B Testing"].map((skill, k) => (
+//                                 <span key={k} className="text-[10px] text-orange-200 bg-orange-500/10 px-2 py-1 border border-orange-500/20 rounded">
+//                                     {skill}
+//                                 </span>
+//                             ))}
+//                         </div>
+//                     </HoloPanel>
+
+//                 </div>
+
+//             </div>
+
+//              {/* --- FULL WIDTH: START PROJECT (Matches Screenshot) --- */}
+//              <div className="lg:col-span-12 mt-8">
+//                 <HoloPanel className="flex flex-col md:flex-row items-center justify-between gap-6 bg-gradient-to-r from-zinc-900 to-black hover:border-green-500/50 transition-colors group" delay={0.9}>
+//                     <div className="space-y-2">
+//                         <div className="flex items-center gap-3">
+//                             <span className="relative flex h-3 w-3">
+//                               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+//                               <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+//                             </span>
+//                             <span className="text-xs font-mono text-green-400 tracking-[0.2em] uppercase">Status: Available for Work</span>
+//                         </div>
+//                         <h3 className="text-3xl md:text-4xl font-bold text-white">Let's build something.</h3>
+//                         <p className="text-zinc-400 text-sm max-w-xl">
+//                             Ready to deploy advanced analytics to solve your business challenges? Initiate the uplink below.
+//                         </p>
+//                     </div>
+                    
+//                     <Link href="/contact">
+//                         <motion.button 
+//                             whileHover={{ scale: 1.05 }}
+//                             whileTap={{ scale: 0.95 }}
+//                             className="px-8 py-4 bg-white text-black font-bold rounded-full hover:bg-cyan-50 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.3)] flex items-center gap-2"
+//                         >
+//                             <Zap className="w-4 h-4 text-black fill-black" />
+//                             START A PROJECT
+//                         </motion.button>
+//                     </Link>
+//                 </HoloPanel>
+//              </div>
+
+//         </div>
+
+//         {/* --- FOOTER: SYSTEM LOG --- */}
+//         <div className="mt-12 border-t border-cyan-900/50 pt-6 flex flex-col md:flex-row justify-between items-center opacity-60">
+//             <div className="flex gap-4 font-mono text-[10px] text-cyan-700">
+//                 <span>MEM_USAGE: 42%</span>
+//                 <span>LATENCY: 12ms</span>
+//                 <span>ENCRYPTION: AES-256</span>
+//             </div>
+//             <div className="mt-2 md:mt-0 text-[10px] text-cyan-700 uppercase">
+//                 Jarvis Protocol v7.0.2 // Online
+//             </div>
+//         </div>
+
+//       </div>
+//     </main>
+//   );
+// }
+
+
 'use client';
 
 import { motion } from 'framer-motion';
@@ -1293,7 +1605,9 @@ import {
   ShieldCheck, 
   Terminal, 
   TrendingUp, 
-  Zap 
+  Zap,
+  Github,    // <--- IMPORTED
+  Linkedin   // <--- IMPORTED
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
@@ -1349,6 +1663,7 @@ export default function AboutPage() {
         <div className="flex flex-col md:flex-row justify-between items-end border-b-2 border-cyan-900/50 pb-6 mb-12 relative">
             <div className="absolute bottom-0 right-0 w-32 h-2 bg-cyan-500/50"></div>
             
+            {/* LEFT SIDE: NAME & TITLE */}
             <motion.div 
                 initial={{ x: -50, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
@@ -1368,16 +1683,46 @@ export default function AboutPage() {
                 </div>
             </motion.div>
 
+            {/* RIGHT SIDE: SOCIALS & LOCATION */}
             <motion.div 
                 initial={{ opacity: 0 }} 
                 animate={{ opacity: 1 }} 
-                className="mt-6 md:mt-0 text-right space-y-1"
+                className="mt-8 md:mt-0 flex flex-col items-end gap-6"
             >
-                <div className="flex items-center justify-end gap-2 text-cyan-400">
-                    <MapPin size={16} />
-                    <span className="font-bold">SECTOR: IRVING_TX</span>
+                {/* LOCATION BLOCK */}
+                <div className="text-right space-y-1">
+                    <div className="flex items-center justify-end gap-2 text-cyan-400">
+                        <MapPin size={16} />
+                        <span className="font-bold">SECTOR: IRVING_TX</span>
+                    </div>
+                    <div className="text-[10px] text-zinc-500">COORDS: 32.8140° N, 96.9489° W</div>
                 </div>
-                <div className="text-[10px] text-zinc-500">COORDS: 32.8140° N, 96.9489° W</div>
+
+                {/* --- NEW: SOCIAL LINKS --- */}
+                <div className="flex items-center gap-3">
+                    
+                    {/* LINKEDIN BUTTON */}
+                    <Link 
+                        href="https://www.linkedin.com/in/siddhartha-dheer-860437247/" // <--- REPLACE THIS URL
+                        target="_blank" 
+                        className="group flex items-center gap-3 px-5 py-2 rounded-full border border-zinc-700 bg-zinc-900/50 hover:border-cyan-500 hover:bg-cyan-500/10 hover:shadow-[0_0_15px_rgba(6,182,212,0.4)] transition-all duration-300"
+                    >
+                        <Linkedin className="w-4 h-4 text-zinc-400 group-hover:text-cyan-400 transition-colors" />
+                        <span className="text-xs font-bold text-zinc-400 group-hover:text-cyan-400 tracking-widest transition-colors">LINKEDIN</span>
+                    </Link>
+
+                    {/* GITHUB BUTTON */}
+                    <Link 
+                        href="https://github.com/sidddheer" // <--- REPLACE THIS URL
+                        target="_blank"
+                        className="group flex items-center gap-3 px-5 py-2 rounded-full border border-zinc-700 bg-zinc-900/50 hover:border-cyan-500 hover:bg-cyan-500/10 hover:shadow-[0_0_15px_rgba(6,182,212,0.4)] transition-all duration-300"
+                    >
+                        <Github className="w-4 h-4 text-zinc-400 group-hover:text-cyan-400 transition-colors" />
+                        <span className="text-xs font-bold text-zinc-400 group-hover:text-cyan-400 tracking-widest transition-colors">GITHUB</span>
+                    </Link>
+
+                </div>
+
             </motion.div>
         </div>
 
