@@ -1655,7 +1655,7 @@ export default function AboutPage() {
           <DataRing />
       </div>
 
-      <Navbar />
+      <Navbar isProjectsPage={true} />
 
       <div className="relative z-10 container mx-auto px-4 pt-32 pb-24 max-w-7xl">
         

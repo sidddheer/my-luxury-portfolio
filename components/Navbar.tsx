@@ -140,29 +140,88 @@
 //   );
 // }
 
+// 'use client';
+
+// import Link from 'next/link';
+// import Logo from '@/components/Logo';
+
+// export default function Navbar() {
+//   return (
+//     <nav className="fixed top-0 left-0 right-0 w-full z-50 flex justify-between items-center px-6 py-6 md:px-12 md:py-8 mix-blend-difference text-white">
+      
+//       {/* LEFT: Logo */}
+//       <Link href="/">
+//         <Logo />
+//       </Link>
+
+//       {/* CENTER: Navigation Links */}
+//       <div className="hidden md:flex gap-12 font-mono text-sm font-bold tracking-widest uppercase">
+//         <Link href="/about" className="hover:opacity-60 transition-opacity duration-300">
+//           About
+//         </Link>
+//         <Link href="/projects" className="hover:opacity-60 transition-opacity duration-300">
+//           Projects
+//         </Link>
+//         {/* ADDED: Link to the new Process page */}
+//         <Link href="/process" className="hover:opacity-60 transition-opacity duration-300">
+//           Process
+//         </Link>
+//       </div>
+
+//       {/* RIGHT: Contact Button */}
+//       <Link 
+//         href="/contact" 
+//         className="hidden md:flex items-center gap-2 border border-white px-6 py-2 rounded-full font-mono text-xs font-bold tracking-widest uppercase hover:bg-white hover:text-black transition-colors duration-300"
+//       >
+//         <span>Contact</span>
+//         <span>→</span>
+//       </Link>
+
+//       {/* MOBILE MENU ICON */}
+//       <div className="md:hidden">
+//          <span className="font-mono text-xs">[MENU]</span>
+//       </div>
+
+//     </nav>
+//   );
+// }
+
 'use client';
 
 import Link from 'next/link';
 import Logo from '@/components/Logo';
 
-export default function Navbar() {
+// 1. Accept the prop 'isProjectsPage'
+export default function Navbar({ isProjectsPage = false }: { isProjectsPage?: boolean }) {
+  
+  // 2. Logic: 
+  // If we are on the Projects Page -> Use solid White text and Extra Bold font (No blend mode).
+  // If we are anywhere else -> Use 'mix-blend-difference' (Your original style).
+  const navClass = isProjectsPage 
+    ? "text-white"                 // Projects Page: Solid White
+    : "mix-blend-difference text-white"; // Default: Inverted colors
+
+  const linkWeight = isProjectsPage
+    ? "font-extrabold" // Projects Page: Extra Bold
+    : "font-bold";     // Default: Standard Bold
+
   return (
-    <nav className="fixed top-0 left-0 right-0 w-full z-50 flex justify-between items-center px-6 py-6 md:px-12 md:py-8 mix-blend-difference text-white">
+    <nav className={`fixed top-0 left-0 right-0 w-full z-50 flex justify-between items-center px-6 py-6 md:px-12 md:py-8 transition-all duration-300 ${navClass}`}>
       
       {/* LEFT: Logo */}
       <Link href="/">
+        {/* Pass the mode to Logo if it needs color adjustment, otherwise keep as is */}
         <Logo />
       </Link>
 
       {/* CENTER: Navigation Links */}
-      <div className="hidden md:flex gap-12 font-mono text-sm font-bold tracking-widest uppercase">
+      <div className={`hidden md:flex gap-12 font-mono text-sm tracking-widest uppercase ${linkWeight}`}>
         <Link href="/about" className="hover:opacity-60 transition-opacity duration-300">
           About
         </Link>
         <Link href="/projects" className="hover:opacity-60 transition-opacity duration-300">
           Projects
         </Link>
-        {/* ADDED: Link to the new Process page */}
         <Link href="/process" className="hover:opacity-60 transition-opacity duration-300">
           Process
         </Link>
@@ -171,7 +230,7 @@ export default function Navbar() {
       {/* RIGHT: Contact Button */}
       <Link 
         href="/contact" 
-        className="hidden md:flex items-center gap-2 border border-white px-6 py-2 rounded-full font-mono text-xs font-bold tracking-widest uppercase hover:bg-white hover:text-black transition-colors duration-300"
+        className={`hidden md:flex items-center gap-2 border px-6 py-2 rounded-full font-mono text-xs tracking-widest uppercase hover:bg-white hover:text-black transition-colors duration-300 ${isProjectsPage ? 'border-white' : 'border-white'} ${linkWeight}`}
       >
         <span>Contact</span>
         <span>→</span>
