@@ -245,17 +245,107 @@
 //   );
 // }
 
+// 'use client';
+
+// import { useState } from 'react';
+// import Link from 'next/link';
+// import Logo from '@/components/Logo';
+
+// // 1. Accept the prop 'isProjectsPage'
+// export default function Navbar({ isProjectsPage = false }: { isProjectsPage?: boolean }) {
+//   const [isOpen, setIsOpen] = useState(false);
+  
+//   // 2. Logic: 
+//   const navClass = isProjectsPage 
+//     ? "text-white"                 
+//     : "mix-blend-difference text-white"; 
+
+//   const linkWeight = isProjectsPage
+//     ? "font-extrabold" 
+//     : "font-bold";     
+
+//   return (
+//     <>
+//       <nav className={`fixed top-0 left-0 right-0 w-full z-50 flex justify-between items-center px-6 py-6 md:px-12 md:py-8 transition-all duration-300 ${isOpen ? 'mix-blend-normal text-white' : navClass}`}>
+        
+//         {/* LEFT: Logo */}
+//         <Link href="/" className="relative z-50">
+//           <Logo />
+//         </Link>
+
+//         {/* CENTER: Desktop Navigation Links (Hidden on Mobile) */}
+//         <div className={`hidden md:flex gap-12 font-mono text-sm tracking-widest uppercase ${linkWeight}`}>
+//           <Link href="/about" className="hover:opacity-60 transition-opacity duration-300">About</Link>
+//           <Link href="/projects" className="hover:opacity-60 transition-opacity duration-300">Projects</Link>
+//           <Link href="/process" className="hover:opacity-60 transition-opacity duration-300">Process</Link>
+//         </div>
+
+//         {/* RIGHT: Desktop Contact Button (Hidden on Mobile) */}
+//         <Link 
+//           href="/contact" 
+//           className={`hidden md:flex items-center gap-2 border px-6 py-2 rounded-full font-mono text-xs tracking-widest uppercase hover:bg-white hover:text-black transition-colors duration-300 ${isProjectsPage ? 'border-white' : 'border-white'} ${linkWeight}`}
+//         >
+//           <span>Contact</span>
+//           <span>→</span>
+//         </Link>
+
+//         {/* MOBILE MENU TOGGLE (Visible only on Mobile) */}
+//         <button 
+//           onClick={() => setIsOpen(!isOpen)} 
+//           className="md:hidden relative z-50 font-mono text-xs tracking-widest uppercase focus:outline-none"
+//         >
+//            {isOpen ? '[CLOSE]' : '[MENU]'}
+//         </button>
+
+//       </nav>
+
+//       {/* MOBILE MENU OVERLAY */}
+//       {isOpen && (
+//         <div className="fixed inset-0 z-40 bg-black flex flex-col items-center justify-center space-y-8 md:hidden">
+//           <Link 
+//             href="/about" 
+//             onClick={() => setIsOpen(false)}
+//             className="text-2xl font-mono tracking-widest uppercase text-white hover:text-cyan-400"
+//           >
+//             About
+//           </Link>
+//           <Link 
+//             href="/projects" 
+//             onClick={() => setIsOpen(false)}
+//             className="text-2xl font-mono tracking-widest uppercase text-white hover:text-cyan-400"
+//           >
+//             Projects
+//           </Link>
+//           <Link 
+//             href="/process" 
+//             onClick={() => setIsOpen(false)}
+//             className="text-2xl font-mono tracking-widest uppercase text-white hover:text-cyan-400"
+//           >
+//             Process
+//           </Link>
+//           <Link 
+//             href="/contact" 
+//             onClick={() => setIsOpen(false)}
+//             className="text-2xl font-mono tracking-widest uppercase text-cyan-400 border border-cyan-400 px-6 py-2 rounded-full"
+//           >
+//             Contact
+//           </Link>
+//         </div>
+//       )}
+//     </>
+//   );
+// }
+
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Logo from '@/components/Logo';
 
-// 1. Accept the prop 'isProjectsPage'
 export default function Navbar({ isProjectsPage = false }: { isProjectsPage?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
   
-  // 2. Logic: 
+  // Logic: Use mix-blend-difference only on standard pages to flip color based on background
   const navClass = isProjectsPage 
     ? "text-white"                 
     : "mix-blend-difference text-white"; 
@@ -264,35 +354,51 @@ export default function Navbar({ isProjectsPage = false }: { isProjectsPage?: bo
     ? "font-extrabold" 
     : "font-bold";     
 
+  // OPTIONAL: Prevent scrolling when menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [isOpen]);
+
   return (
     <>
-      <nav className={`fixed top-0 left-0 right-0 w-full z-50 flex justify-between items-center px-6 py-6 md:px-12 md:py-8 transition-all duration-300 ${isOpen ? 'mix-blend-normal text-white' : navClass}`}>
+      {/* FIX: Added 'bg-black' to the isOpen state. 
+         This makes the header solid black when open, hiding any "Ghost" text underneath it.
+      */}
+      <nav 
+        className={`fixed top-0 left-0 right-0 w-full z-50 flex justify-between items-center px-6 py-6 md:px-12 md:py-8 transition-all duration-300 
+        ${isOpen ? 'mix-blend-normal text-white bg-black' : navClass}`}
+      >
         
         {/* LEFT: Logo */}
-        <Link href="/" className="relative z-50">
+        <Link href="/" className="relative z-50 block" onClick={() => setIsOpen(false)}>
           <Logo />
         </Link>
 
-        {/* CENTER: Desktop Navigation Links (Hidden on Mobile) */}
+        {/* CENTER: Desktop Navigation Links */}
         <div className={`hidden md:flex gap-12 font-mono text-sm tracking-widest uppercase ${linkWeight}`}>
           <Link href="/about" className="hover:opacity-60 transition-opacity duration-300">About</Link>
           <Link href="/projects" className="hover:opacity-60 transition-opacity duration-300">Projects</Link>
           <Link href="/process" className="hover:opacity-60 transition-opacity duration-300">Process</Link>
         </div>
 
-        {/* RIGHT: Desktop Contact Button (Hidden on Mobile) */}
+        {/* RIGHT: Desktop Contact Button */}
         <Link 
           href="/contact" 
-          className={`hidden md:flex items-center gap-2 border px-6 py-2 rounded-full font-mono text-xs tracking-widest uppercase hover:bg-white hover:text-black transition-colors duration-300 ${isProjectsPage ? 'border-white' : 'border-white'} ${linkWeight}`}
+          className={`hidden md:flex items-center gap-2 border px-6 py-2 rounded-full font-mono text-xs tracking-widest uppercase hover:bg-white hover:text-black transition-colors duration-300 border-white ${linkWeight}`}
         >
           <span>Contact</span>
           <span>→</span>
         </Link>
 
-        {/* MOBILE MENU TOGGLE (Visible only on Mobile) */}
+        {/* MOBILE MENU TOGGLE */}
+        {/* Added bg-black/0 to ensure it catches clicks but doesn't block visuals unnecessarily */}
         <button 
           onClick={() => setIsOpen(!isOpen)} 
-          className="md:hidden relative z-50 font-mono text-xs tracking-widest uppercase focus:outline-none"
+          className="md:hidden relative z-50 font-mono text-xs tracking-widest uppercase focus:outline-none p-2"
         >
            {isOpen ? '[CLOSE]' : '[MENU]'}
         </button>
